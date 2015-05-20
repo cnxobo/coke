@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="SkinInfo">
+      <Property name="creationType">org.xobo.coke.model.SkinInfo</Property>
+      <PropertyDef name="name">
+        <Property></Property>
+      </PropertyDef>
+      <PropertyDef name="desc">
+        <Property></Property>
+      </PropertyDef>
+      <PropertyDef name="ie6">
+        <Property name="dataType">boolean</Property>
+      </PropertyDef>
+    </DataType>
+  </Model>
+  <View listener="spring:coke.skinMaintain#initSkin">
+    <SimpleIconButton>
+      <ClientEvent name="onClick">view.id(&quot;dialogChangeSkin&quot;).show();
+</ClientEvent>
+      <Property name="icon">url(>skin>common/icons.gif) -20px -60px</Property>
+      <Property name="tip">切换皮肤</Property>
+    </SimpleIconButton>
+    <Dialog id="dialogChangeSkin">
+      <ClientEvent name="onReady">self.changeSkin = function(){
+	var skinName = view.id(&quot;dataSetSkins&quot;).getData(&quot;#.name&quot;);
+	var ajaxActionChangeSkin = view.id(&quot;ajaxActionChangeSkin&quot;);
+	ajaxActionChangeSkin.set(&quot;parameter&quot;, skinName).execute(function(){
+		dorado.MessageBox.confirm('皮肤要重新加载才能生效，确认重新加载页面？' , {
+			callback:function(){
+			window.location.reload();
+			}});
+	});
+}
+
+</ClientEvent>
+      <Property name="height">380</Property>
+      <Property name="width">150</Property>
+      <Property name="caption">皮肤列表</Property>
+      <Buttons>
+        <Button>
+          <ClientEvent name="onClick">view.id(&quot;dialogChangeSkin&quot;).changeSkin();</ClientEvent>
+          <Property name="caption">切换</Property>
+        </Button>
+      </Buttons>
+      <Children>
+        <DataSet id="dataSetSkins">
+          <Property name="dataProvider">coke.skinMaintain#loadSkinInfos</Property>
+          <Property name="dataType">[SkinInfo]</Property>
+        </DataSet>
+        <DataGrid>
+          <ClientEvent name="onDataRowDoubleClick">view.id(&quot;dialogChangeSkin&quot;).changeSkin();</ClientEvent>
+          <Property name="dataSet">dataSetSkins</Property>
+          <Property name="showHeader">false</Property>
+          <Property name="readOnly">true</Property>
+          <DataColumn name="desc">
+            <Property name="property">desc</Property>
+          </DataColumn>
+        </DataGrid>
+        <AjaxAction id="ajaxActionChangeSkin">
+          <Property name="service">coke.skinMaintain#changeSkin</Property>
+        </AjaxAction>
+      </Children>
+      <Tools/>
+    </Dialog>
+  </View>
+</ViewConfig>
