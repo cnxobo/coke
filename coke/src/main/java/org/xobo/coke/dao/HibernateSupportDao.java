@@ -324,6 +324,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 
 		baseEntity.setCreateUser(user.getUsername());
 		baseEntity.setCreateDate(new Date());
+		baseEntity.setDeleted(false);
 		session.save(baseEntity);
 	}
 
@@ -370,6 +371,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		}
 		baseEntity.setUpdateUser(user.getUsername());
 		baseEntity.setUpdateDate(new Date());
+		baseEntity.setDeleted(false);
 		session.update(baseEntity);
 	}
 

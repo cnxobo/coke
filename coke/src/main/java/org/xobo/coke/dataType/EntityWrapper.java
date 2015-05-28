@@ -7,6 +7,12 @@ public class EntityWrapper<K, V> {
 	public EntityWrapper() {
 	}
 
+	@SuppressWarnings("unchecked")
+	public EntityWrapper(K key) {
+		this.key = key;
+		this.value = (V) key;
+	}
+
 	public EntityWrapper(K key, V value) {
 		this.key = key;
 		this.value = value;

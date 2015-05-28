@@ -8,6 +8,11 @@ import com.bstek.dorado.annotation.PropertyDef;
 
 @MappedSuperclass
 public abstract class BaseModel<K> extends SuperBaseModel<K> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5364289821735509171L;
+
 	@PropertyDef(label = "创建人")
 	private String createUser;
 	@PropertyDef(label = "创建日期")
