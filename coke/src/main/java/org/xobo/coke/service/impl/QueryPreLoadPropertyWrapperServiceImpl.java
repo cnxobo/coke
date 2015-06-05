@@ -93,7 +93,7 @@ public class QueryPreLoadPropertyWrapperServiceImpl implements QueryPropertyWrap
 
 	@Override
 	public void register(Class<?> clazz, Field field) {
-		Map<String, PropertyWrapper> classPropertyWrapper = golbalPropertyWrapperMap.get(clazz);
+		Map<String, PropertyWrapper> classPropertyWrapper = golbalPropertyWrapperMap.safeGet(clazz);
 
 		Class<?> type = field.getType();
 		String property = field.getName();

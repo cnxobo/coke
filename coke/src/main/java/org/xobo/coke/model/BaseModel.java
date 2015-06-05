@@ -23,7 +23,7 @@ public abstract class BaseModel<K> extends SuperBaseModel<K> {
 	private Date updateDate;
 
 	@PropertyDef(label = "有效")
-	private Boolean deleted;
+	private Boolean deleted = false;
 
 	public String getCreateUser() {
 		return createUser;

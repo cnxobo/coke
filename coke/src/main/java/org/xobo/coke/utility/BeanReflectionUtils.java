@@ -7,6 +7,8 @@ import java.util.Collection;
 
 import javassist.util.proxy.ProxyObject;
 
+import org.apache.commons.beanutils.PropertyUtils;
+
 public class BeanReflectionUtils {
 
 	public static Collection<Field> loadClassFields(Class<?> clazz) {
@@ -25,5 +27,21 @@ public class BeanReflectionUtils {
 			clazz = clazz.getSuperclass();
 		}
 		return clazz;
+	}
+
+	public static void mergeObjectWithAppointedProperties(Object target, Object source, String[] properties) {
+		for (String property : properties) {
+			try {
+				Object targetValue = PropertyUtils.getProperty(target, property);
+				Object sourceValue = PropertyUtils.getProperty(source, property);
+				if (targetValue == null && sourceValue != null) {
+					PropertyUtils.setProperty(target, property, sourceValue);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+
 	}
 }

@@ -16,12 +16,12 @@ public class MapMap<C, K, V> {
 	}
 
 	public MapMap<C, K, V> add(C c, K k, V v) {
-		get(c).put(k, v);
+		safeGet(c).put(k, v);
 		return this;
 	}
 
 	public V get(C c, K k) {
-		return get(c).get(k);
+		return safeGet(c).get(k);
 	}
 
 	public Map<K, V> firstMapValue() {
@@ -29,7 +29,7 @@ public class MapMap<C, K, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<K, V> get(C c) {
+	public Map<K, V> safeGet(C c) {
 		Map<K, V> kv = data.get(c);
 		if (kv == null) {
 			try {
@@ -40,6 +40,14 @@ public class MapMap<C, K, V> {
 			}
 		}
 		return kv;
+	}
+
+	public Map<K, V> get(C c) {
+		return data.get(c);
+	}
+
+	public Map<K, V> put(C c, Map<K, V> map) {
+		return data.put(c, map);
 	}
 
 	public static <C, K, V> MapMap<C, K, V> hashMap() {

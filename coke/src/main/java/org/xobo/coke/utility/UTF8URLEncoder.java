@@ -1,13 +1,14 @@
 package org.xobo.coke.utility;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+
+import org.springframework.web.util.UriUtils;
 
 public class UTF8URLEncoder {
 	public static String encode(String value) {
 		String encodedValue;
 		try {
-			encodedValue = URLEncoder.encode(value, "utf-8");
+			encodedValue = UriUtils.encodePath(value, "UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 			encodedValue = value;
 		}

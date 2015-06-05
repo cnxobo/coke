@@ -20,6 +20,15 @@ public class PersistWrapper {
 		return this;
 	}
 
+	/**
+	 * @param parentClazz
+	 *            主表类
+	 * @param childrenProperty
+	 *            从表在主表的属性值
+	 * @param childClazz
+	 *            从表类
+	 * @return
+	 */
 	public PersistWrapper addReferenceWrapper(Class<?> parentClazz, String childrenProperty, Class<?> childClazz) {
 		referenceWrapperMap.add(parentClazz, new ReferenceWrapper(childrenProperty, childClazz));
 		return this;
