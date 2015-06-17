@@ -22,9 +22,9 @@ import org.springframework.stereotype.Service;
 import org.xobo.coke.entity.PersistWrapper;
 import org.xobo.coke.entity.PropertyWrapper;
 import org.xobo.coke.entity.ReferenceWrapper;
-import org.xobo.coke.model.BaseModel;
 import org.xobo.coke.model.Company;
 import org.xobo.coke.model.DetailModel;
+import org.xobo.coke.model.IBase;
 import org.xobo.coke.model.PathModel;
 import org.xobo.coke.service.PersistAction;
 import org.xobo.coke.service.impl.CriteriaImplHelper;
@@ -183,17 +183,16 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		return (X) createQuery(hql, parameters).uniqueResult();
 	}
 
-	public void persistEntities(Collection<? extends BaseModel<K>> entites) {
+	public void persistEntities(Collection<? extends IBase<K>> entites) {
 		persistEntities(entites, null, null);
 	}
 
-	public void persistEntities(Collection<? extends BaseModel<K>> entites, PersistWrapper persistWrapper) {
+	public void persistEntities(Collection<? extends IBase<K>> entites, PersistWrapper persistWrapper) {
 		persistEntities(entites, null, persistWrapper);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void persistEntities(Collection<? extends BaseModel<K>> entites, BaseModel<K> parent,
-			PersistWrapper persistWrapper) {
+	public void persistEntities(Collection<? extends IBase<K>> entites, IBase<K> parent, PersistWrapper persistWrapper) {
 		if (entites == null || entites.isEmpty()) {
 			return;
 		}
@@ -203,7 +202,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 
 		@SuppressWarnings("rawtypes")
 		PersistAction persistAction = null;
-		for (BaseModel<K> entity : entites) {
+		for (IBase<K> entity : entites) {
 
 			if (persistAction == null && persistWrapper != null) {
 				persistAction = persistWrapper.getPersistAction(entity);
@@ -241,7 +240,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void saveChildren(BaseModel<K> entity, PersistWrapper persistWrapper) {
+	public void saveChildren(IBase<K> entity, PersistWrapper persistWrapper) {
 		if (persistWrapper == null) {
 			return;
 		}
@@ -250,13 +249,13 @@ public class HibernateSupportDao<K> extends HibernateDao {
 			for (ReferenceWrapper property : properties) {
 				Object object = EntityUtils.getValue(entity, property.getProperty());
 				if (object instanceof Collection<?>) {
-					persistEntities((Collection<? extends BaseModel<K>>) object, entity, persistWrapper);
+					persistEntities((Collection<? extends IBase<K>>) object, entity, persistWrapper);
 				}
 			}
 		}
 	}
 
-	public int deleteChildren(Session session, BaseModel<K> parent, PersistWrapper persistWrapper) {
+	public int deleteChildren(Session session, IBase<K> parent, PersistWrapper persistWrapper) {
 
 		int result = 0;
 		if (persistWrapper == null) {
@@ -276,8 +275,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
-	public void setParentId(Session session, BaseModel<K> entity, BaseModel<K> parent) {
+	public void setParentId(Session session, IBase<K> entity, IBase<K> parent) {
 		if (entity instanceof DetailModel) {
 			K parentId;
 			if (parent == null) {
@@ -290,31 +288,31 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		setPathValue(session, entity, parent);
 	}
 
-	public void insertEntity(BaseModel<K> baseEntity) {
+	public void insertEntity(IBase<K> baseEntity) {
 		insertEntity(getSession(), baseEntity, ContextHolder.getLoginUser());
 	}
 
-	public void insertEntity(BaseModel<K> baseEntity, IUser user) {
+	public void insertEntity(IBase<K> baseEntity, IUser user) {
 		insertEntity(getSession(), baseEntity, user);
 	}
 
-	public void updateEntity(BaseModel<K> baseEntity) {
+	public void updateEntity(IBase<K> baseEntity) {
 		updateEntity(getSession(), baseEntity, ContextHolder.getLoginUser());
 	}
 
-	public void updateEntity(BaseModel<K> baseEntity, IUser user) {
+	public void updateEntity(IBase<K> baseEntity, IUser user) {
 		updateEntity(getSession(), baseEntity, user);
 	}
 
-	public void deleteEntity(BaseModel<K> baseEntity) {
+	public void deleteEntity(IBase<K> baseEntity) {
 		deleteEntity(getSession(), baseEntity, ContextHolder.getLoginUser());
 	}
 
-	public void deleteEntity(BaseModel<K> baseEntity, IUser user) {
+	public void deleteEntity(IBase<K> baseEntity, IUser user) {
 		deleteEntity(getSession(), baseEntity, user);
 	}
 
-	public static void insertEntity(Session session, BaseModel<?> baseEntity, IUser user) {
+	public static void insertEntity(Session session, IBase<?> baseEntity, IUser user) {
 		if (user == null) {
 			user = ContextHolder.getLoginUser();
 		}
@@ -329,7 +327,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setPathValue(Session session, BaseModel<K> baseEntity, BaseModel<K> parent) {
+	private void setPathValue(Session session, IBase<K> baseEntity, IBase<K> parent) {
 		if (baseEntity instanceof PathModel) {
 			PathModel<K> pathEntity = (PathModel<K>) baseEntity;
 			K parentId;
@@ -365,7 +363,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 
 	}
 
-	public static void updateEntity(Session session, BaseModel<?> baseEntity, IUser user) {
+	public static void updateEntity(Session session, IBase<?> baseEntity, IUser user) {
 		if (user == null) {
 			user = ContextHolder.getLoginUser();
 		}
@@ -375,7 +373,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		session.update(baseEntity);
 	}
 
-	public static void deleteEntity(Session session, BaseModel<?> baseEntity, IUser user) {
+	public static void deleteEntity(Session session, IBase<?> baseEntity, IUser user) {
 		if (user == null) {
 			user = ContextHolder.getLoginUser();
 		}

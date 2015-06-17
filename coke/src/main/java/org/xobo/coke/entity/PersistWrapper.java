@@ -7,7 +7,6 @@ import java.util.Map;
 import javassist.util.proxy.ProxyObject;
 
 import org.xobo.coke.dataType.ListMap;
-import org.xobo.coke.model.BaseModel;
 import org.xobo.coke.service.PersistAction;
 import org.xobo.coke.service.impl.NopPersistAction;
 
@@ -38,7 +37,7 @@ public class PersistWrapper {
 		return referenceWrapperMap.getValue(clazz);
 	}
 
-	public Collection<ReferenceWrapper> getPropertyWrappers(BaseModel<?> baseModel) {
+	public Collection<ReferenceWrapper> getPropertyWrappers(Object baseModel) {
 		return getReferenceWrappers(getOrginalClass(baseModel));
 	}
 
@@ -66,7 +65,7 @@ public class PersistWrapper {
 		persistActionMap.put(clazz, persistAction);
 	}
 
-	public PersistAction<?> getPersistAction(BaseModel<?> baseModel) {
+	public PersistAction<?> getPersistAction(Object baseModel) {
 		return getPersistAction(getOrginalClass(baseModel));
 	}
 

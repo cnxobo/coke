@@ -156,3 +156,16 @@ function $xa_resetQueryform(dataSetQuery, config) {
 	}
 	dataSetQuery.set("data", config);
 }
+
+function $xa_getSelections(dataGrid, allIfNoSelection) {
+	var selection = dataGrid.get("selection");
+	var list;
+	if (selection && selection.length > 0) {
+		list = selection;
+	} else if (allIfNoSelection){
+		list = dataGrid.get("dataSet").getData(dataGrid.get("dataPath"));
+	} else {
+		list = [];
+	}
+	return list;
+}

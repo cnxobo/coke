@@ -7,11 +7,7 @@ import javax.persistence.MappedSuperclass;
 import com.bstek.dorado.annotation.PropertyDef;
 
 @MappedSuperclass
-public abstract class BaseModel<K> extends SuperBaseModel<K> {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5364289821735509171L;
+public abstract class BaseModel<K> implements IBase<String> {
 
 	@PropertyDef(label = "创建人")
 	private String createUser;
@@ -25,42 +21,52 @@ public abstract class BaseModel<K> extends SuperBaseModel<K> {
 	@PropertyDef(label = "有效")
 	private Boolean deleted = false;
 
+	@Override
 	public String getCreateUser() {
 		return createUser;
 	}
 
+	@Override
 	public void setCreateUser(String createUser) {
 		this.createUser = createUser;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
 
+	@Override
 	public String getUpdateUser() {
 		return updateUser;
 	}
 
+	@Override
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
 	}
 
+	@Override
 	public Date getUpdateDate() {
 		return updateDate;
 	}
 
+	@Override
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
 
+	@Override
 	public Boolean getDeleted() {
 		return deleted;
 	}
 
+	@Override
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
