@@ -2,9 +2,11 @@ package org.xobo.coke.utility;
 
 import java.io.UnsupportedEncodingException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.util.UriUtils;
 
-public class UTF8URLEncoder {
+public class CokeURLUtils {
 	public static String encode(String value) {
 		String encodedValue;
 		try {
@@ -18,5 +20,13 @@ public class UTF8URLEncoder {
 	public static String getContentDisposition(String fileName) {
 		String encodedFilename = encode(fileName);
 		return "attachment;filename=\"" + encodedFilename + "\";filename*=utf-8''" + encodedFilename;
+	}
+
+	public static String getWebAppPath(HttpServletRequest request) {
+		String scheme = request.getScheme();
+		String serverName = request.getServerName();
+		int portNumber = request.getServerPort();
+		String contextPath = request.getContextPath();
+		return scheme + "://" + serverName + ":" + portNumber + contextPath;
 	}
 }

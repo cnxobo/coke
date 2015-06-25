@@ -96,8 +96,8 @@ public class DictServiceImpl implements DictService {
 	}
 
 	@Override
-	public Object define(String register, Object entryKey, Object categorykey, Object... types) {
-		DictEntry dictEntry = loadDictEntryMap(register, categorykey, types).get(entryKey);
+	public Object define(String type, Object categorykey, Object entryKey, Object... extraTypes) {
+		DictEntry dictEntry = loadDictEntryMap(type, categorykey, extraTypes).get(entryKey);
 		return dictEntry != null ? dictEntry.getValue() : null;
 	}
 

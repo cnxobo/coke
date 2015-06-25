@@ -18,7 +18,7 @@ public interface DictService {
 	 */
 	Collection<DictEntry> lookup(String type, Object categorykey, Object... extraTypes);
 
-	Object define(String register, Object entryKey, Object categorykey, Object... extraTypes);
+	Object define(String register, Object categorykey, Object entryKey, Object... extraTypes);
 
 	void removeCache(Object... types);
 }
