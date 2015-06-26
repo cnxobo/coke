@@ -44,6 +44,15 @@ public class ListMap<K, V> {
 		return this;
 	}
 
+	public Collection<V> remove(K key) {
+		return data.remove(key);
+	}
+
+	public boolean removeValue(K key, V value) {
+		Collection<V> list = data.get(key);
+		return list != null ? list.remove(value) : null;
+	}
+
 	public Collection<V> getValue(K k) {
 		return data.get(k);
 	}
