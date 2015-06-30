@@ -169,3 +169,12 @@ function $xa_getSelections(dataGrid, allIfNoSelection) {
 	}
 	return list;
 }
+
+function $xa_openUrl(link, title){
+	if (top.openUrlInFrameTab){
+		top.openUrlInFrameTab(link, title);
+	} else {
+		window.open(link,"_blank");
+	}
+.)
+}
