@@ -25,6 +25,7 @@ import org.xobo.coke.entity.ReferenceWrapper;
 import org.xobo.coke.model.Company;
 import org.xobo.coke.model.DetailModel;
 import org.xobo.coke.model.IBase;
+import org.xobo.coke.model.IDetail;
 import org.xobo.coke.model.PathModel;
 import org.xobo.coke.service.PersistAction;
 import org.xobo.coke.service.impl.CriteriaImplHelper;
@@ -276,10 +277,12 @@ public class HibernateSupportDao<K> extends HibernateDao {
 	}
 
 	public void setParentId(Session session, IBase<K> entity, IBase<K> parent) {
-		if (entity instanceof DetailModel) {
-			K parentId;
+		if (entity instanceof IDetail<?>) {
+			K parentId = null;
 			if (parent == null) {
-				parentId = ((DetailModel<K>) entity).getRoot();
+				if (entity instanceof DetailModel<?>) {
+					parentId = ((DetailModel<K>) entity).getRoot();
+				}
 			} else {
 				parentId = parent.getId();
 			}
@@ -326,7 +329,6 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		session.save(baseEntity);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void setPathValue(Session session, IBase<K> baseEntity, IBase<K> parent) {
 		if (baseEntity instanceof PathModel) {
 			PathModel<K> pathEntity = (PathModel<K>) baseEntity;
