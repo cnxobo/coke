@@ -358,7 +358,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 			}
 			String typePath = pathEntity.getTypePath();
 			String newTypePath = parentTypePath + pathEntity.getType() + indexNo + PathModel.TypeSeparator;
-			if (!typePath.equals(newTypePath)) {
+			if (typePath == null || !typePath.equals(newTypePath)) {
 				pathEntity.setTypePath(newTypePath);
 			}
 		}
@@ -443,6 +443,36 @@ public class HibernateSupportDao<K> extends HibernateDao {
 			}
 		}
 		return count;
+	}
+
+	public void rebuildTypePath(Criteria criteria, Class<?> clazz, K parentId, String parentTypePath) {
+		parentTypePath = parentTypePath == null ? PathModel.TypeSeparator : parentTypePath;
+		recursiveBuildTypePath(criteria, clazz, parentId, parentTypePath);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void recursiveBuildTypePath(Criteria criteria, Class<?> clazz, K parentId, String parentTypePath) {
+		DetachedCriteria dc = buildDetachedCriteria(criteria, clazz);
+		if (parentId == null) {
+			dc.add(Restrictions.isNull("parentId"));
+		} else {
+			dc.add(Restrictions.eq("parentId", parentId));
+		}
+		Collection<?> list = query(dc);
+		Long indexNo = 1L;
+		Long orderNo = 1L;
+
+		for (Object object : list) {
+			if (object instanceof PathModel<?>) {
+				PathModel<K> entity = (PathModel<K>) object;
+				entity.setIndexNo(indexNo);
+				entity.setOrderNo(orderNo);
+				entity.setTypePath(parentTypePath + indexNo + PathModel.TypeSeparator);
+				indexNo++;
+				updateEntity(entity);
+				recursiveBuildTypePath(criteria, clazz, entity.getId(), entity.getTypePath());
+			}
+		}
 	}
 
 }

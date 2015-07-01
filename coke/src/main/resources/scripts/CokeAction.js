@@ -176,5 +176,4 @@ function $xa_openUrl(link, title){
 	} else {
 		window.open(link,"_blank");
 	}
-.)
 }
