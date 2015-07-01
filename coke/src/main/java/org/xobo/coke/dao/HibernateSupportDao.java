@@ -468,9 +468,10 @@ public class HibernateSupportDao<K> extends HibernateDao {
 				entity.setIndexNo(indexNo);
 				entity.setOrderNo(orderNo);
 				entity.setTypePath(parentTypePath + indexNo + PathModel.TypeSeparator);
-				indexNo++;
 				updateEntity(entity);
 				recursiveBuildTypePath(criteria, clazz, entity.getId(), entity.getTypePath());
+				indexNo++;
+				orderNo++;
 			}
 		}
 	}
