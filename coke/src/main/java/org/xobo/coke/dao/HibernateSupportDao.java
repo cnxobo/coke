@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projection;
@@ -476,4 +477,18 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		}
 	}
 
+	public <T> void manualSave(IBase<T> entity, IUser user) {
+		Session session = getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		try {
+			insertEntity(session, entity, user);
+			transaction.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			transaction.rollback();
+		} finally {
+			session.flush();
+			session.close();
+		}
+	}
 }
