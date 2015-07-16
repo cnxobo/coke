@@ -373,7 +373,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		baseEntity.setUpdateUser(user.getUsername());
 		baseEntity.setUpdateDate(new Date());
 		baseEntity.setDeleted(false);
-		session.update(baseEntity);
+		session.saveOrUpdate(baseEntity);
 	}
 
 	public static void deleteEntity(Session session, IBase<?> baseEntity, IUser user) {
