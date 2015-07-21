@@ -6,8 +6,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import javassist.util.proxy.ProxyObject;
+import net.sf.cglib.proxy.Proxy;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.util.ClassUtils;
 
 public class BeanReflectionUtils {
 
@@ -25,6 +28,12 @@ public class BeanReflectionUtils {
 		Class<?> clazz = instance.getClass();
 		if (instance instanceof ProxyObject) {
 			clazz = clazz.getSuperclass();
+		} else if (Proxy.isProxyClass(clazz)) {
+			return clazz.getSuperclass();
+		} else if (AopUtils.isJdkDynamicProxy(clazz)) {
+			return clazz.getSuperclass();
+		} else if (ClassUtils.isCglibProxyClass(clazz)) {
+			return clazz.getSuperclass();
 		}
 		return clazz;
 	}
@@ -40,8 +49,6 @@ public class BeanReflectionUtils {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
-
 	}
 }
