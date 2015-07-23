@@ -1,11 +1,14 @@
 package org.xobo.coke.utility;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,6 +16,11 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.springframework.util.ReflectionUtils;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -29,6 +37,15 @@ public class MethodUtils {
 		Method method = ReflectionUtils.findMethod(BeanReflectionUtils.getClass(target), methodName,
 				paramTypes);
 		return invokeMethod(target, method, parameter);
+	}
+
+	public static Object invokeMethod(Object target, String methodName, JsonNode rootNode)
+			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException,
+			NoSuchMethodException, InstantiationException, JsonParseException, JsonMappingException, IOException {
+		Class<?>[] paramTypes = null;
+		Method method = ReflectionUtils.findMethod(BeanReflectionUtils.getClass(target), methodName,
+				paramTypes);
+		return invokeMethod(target, method, rootNode);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -101,4 +118,61 @@ public class MethodUtils {
 		}
 		return method.invoke(target, realArgs);
 	}
+
+	public static Object invokeMethod(Object target, Method method, JsonNode rootNode)
+			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException,
+			JsonParseException, JsonMappingException, IOException {
+		String[] parameterNames = parameterNamesMap.get(method);
+		if (parameterNames == null) {
+			parameterNames = paranamer.lookupParameterNames(method);
+			if (parameterNames == null) {
+				parameterNames = new String[] {};
+			}
+			parameterNamesMap.put(method, parameterNames);
+		}
+
+		ObjectMapper mapper = new ObjectMapper();
+		Type[] parametersType = method.getGenericParameterTypes();
+		Object[] realArgs = new Object[parametersType.length];
+
+		for (int i = 0; i < parameterNames.length; i++) {
+			String name = parameterNames[i];
+			JsonNode valueNode = null;
+			if (parameterNames.length == 1) {
+				valueNode = rootNode;
+			} else {
+				valueNode = rootNode.get(name);
+			}
+			Object value = null;
+			Type ptype = parametersType[i];
+			if (ptype instanceof Class<?>) {
+				value = mapper.readValue(valueNode.toString(), (Class<?>) ptype);
+			} else if (ptype instanceof ParameterizedType) {
+				ParameterizedType parameterizedType = (ParameterizedType) ptype;
+				Type[] typeArguments = parameterizedType.getActualTypeArguments();
+				Type rawType = parameterizedType.getRawType();
+				if (typeArguments.length > 0) {
+					Type typeArgument = typeArguments[0];
+					Class<?> rt = (Class<?>) typeArgument;
+					if (rawType instanceof Class<?>) {
+						if (Collection.class.isAssignableFrom((Class<?>) rawType)) {
+							if (typeArguments.length > 0) {
+								JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, rt);
+								value = mapper.readValue(valueNode.toString(), javaType);
+							}
+						} else if (Map.class.isAssignableFrom((Class<?>) rawType)) {
+							JavaType javaType = mapper.getTypeFactory().constructParametrizedType(Map.class,
+									LinkedHashMap.class, rt,
+									Object.class);
+							value = mapper.readValue(valueNode.toString(), javaType);
+						}
+
+					}
+				}
+			}
+			realArgs[i] = value;
+		}
+		return method.invoke(target, realArgs);
+	}
+
 }
