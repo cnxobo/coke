@@ -17,6 +17,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.springframework.util.ReflectionUtils;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -132,45 +133,53 @@ public class MethodUtils {
 		}
 
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
 		Type[] parametersType = method.getGenericParameterTypes();
 		Object[] realArgs = new Object[parametersType.length];
 
-		for (int i = 0; i < parameterNames.length; i++) {
-			String name = parameterNames[i];
-			JsonNode valueNode = null;
-			if (parameterNames.length == 1) {
-				valueNode = rootNode;
-			} else {
+		if (rootNode != null) {
+			for (int i = 0; i < parameterNames.length; i++) {
+				String name = parameterNames[i];
+				JsonNode valueNode = null;
 				valueNode = rootNode.get(name);
-			}
-			Object value = null;
-			Type ptype = parametersType[i];
-			if (ptype instanceof Class<?>) {
-				value = mapper.readValue(valueNode.toString(), (Class<?>) ptype);
-			} else if (ptype instanceof ParameterizedType) {
-				ParameterizedType parameterizedType = (ParameterizedType) ptype;
-				Type[] typeArguments = parameterizedType.getActualTypeArguments();
-				Type rawType = parameterizedType.getRawType();
-				if (typeArguments.length > 0) {
-					Type typeArgument = typeArguments[0];
-					Class<?> rt = (Class<?>) typeArgument;
-					if (rawType instanceof Class<?>) {
-						if (Collection.class.isAssignableFrom((Class<?>) rawType)) {
-							if (typeArguments.length > 0) {
-								JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, rt);
+
+				if (valueNode == null) {
+					valueNode = rootNode;
+				}
+
+				Object value = null;
+				Type ptype = parametersType[i];
+				if (ptype instanceof Class<?>) {
+					value = mapper.readValue(valueNode.toString(), (Class<?>) ptype);
+				} else if (ptype instanceof ParameterizedType) {
+					ParameterizedType parameterizedType = (ParameterizedType) ptype;
+					Type[] typeArguments = parameterizedType.getActualTypeArguments();
+					Type rawType = parameterizedType.getRawType();
+					if (typeArguments.length > 0) {
+						Type typeArgument = typeArguments[0];
+						Class<?> rt = (Class<?>) typeArgument;
+						if (rawType instanceof Class<?>) {
+							if (Collection.class.isAssignableFrom((Class<?>) rawType)) {
+								if (typeArguments.length > 0) {
+									JavaType javaType = mapper.getTypeFactory().constructParametrizedType(
+											ArrayList.class,
+											List.class, rt);
+									value = mapper.readValue(valueNode.toString(), javaType);
+								}
+							} else if (Map.class.isAssignableFrom((Class<?>) rawType)) {
+								JavaType javaType = mapper.getTypeFactory().constructParametrizedType(
+										LinkedHashMap.class,
+										Map.class, rt,
+										Object.class);
 								value = mapper.readValue(valueNode.toString(), javaType);
 							}
-						} else if (Map.class.isAssignableFrom((Class<?>) rawType)) {
-							JavaType javaType = mapper.getTypeFactory().constructParametrizedType(Map.class,
-									LinkedHashMap.class, rt,
-									Object.class);
-							value = mapper.readValue(valueNode.toString(), javaType);
-						}
 
+						}
 					}
 				}
+				realArgs[i] = value;
 			}
-			realArgs[i] = value;
 		}
 		return method.invoke(target, realArgs);
 	}
