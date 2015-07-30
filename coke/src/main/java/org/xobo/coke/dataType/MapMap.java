@@ -46,6 +46,10 @@ public class MapMap<C, K, V> {
 		return data.get(c);
 	}
 
+	public Map<K, V> remove(C c) {
+		return data.remove(c);
+	}
+
 	public Map<K, V> put(C c, Map<K, V> map) {
 		return data.put(c, map);
 	}
