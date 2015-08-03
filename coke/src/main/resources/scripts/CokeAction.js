@@ -72,7 +72,7 @@ function $xa_deleteItem(dataSet, dataPath, updateAction, callBack) {
 
 function $xa_deleteItems(dataGrid, updateAction, callBack) {
 	var selection = dataGrid.get("selection");
-	if (selection.length == 0) {
+	if (!selection || selection.length == 0) {
 		var list = dataGrid.get("dataSet").getData(dataGrid.get("dataPath"));
 		if (list && list.current) {
 			dorado.MessageBox.confirm("确认要删除当前记录么？", {
@@ -80,7 +80,7 @@ function $xa_deleteItems(dataGrid, updateAction, callBack) {
 				title : "删除记录",
 				callback : function() {
 					list.current.remove();
-					updateAction.execute(callBack);
+					updateAction && updateAction.execute(callBack);
 				}
 			});
 		} else {
@@ -94,7 +94,7 @@ function $xa_deleteItems(dataGrid, updateAction, callBack) {
 				selection.each(function(item) {
 					item.remove();
 				});
-				updateAction.execute(callBack);
+				updateAction && updateAction.execute(callBack);
 			}
 		});
 	}
@@ -162,7 +162,7 @@ function $xa_getSelections(dataGrid, allIfNoSelection) {
 	var list;
 	if (selection && selection.length > 0) {
 		list = selection;
-	} else if (allIfNoSelection){
+	} else if (allIfNoSelection) {
 		list = dataGrid.get("dataSet").getData(dataGrid.get("dataPath"));
 	} else {
 		list = [];
@@ -170,10 +170,10 @@ function $xa_getSelections(dataGrid, allIfNoSelection) {
 	return list;
 }
 
-function $xa_openUrl(link, title){
-	if (top.openUrlInFrameTab){
+function $xa_openUrl(link, title) {
+	if (top.openUrlInFrameTab) {
 		top.openUrlInFrameTab(link, title);
 	} else {
-		window.open(link,"_blank");
+		window.open(link, "_blank");
 	}
 }
