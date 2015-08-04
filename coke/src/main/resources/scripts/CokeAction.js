@@ -9,9 +9,14 @@ function $xa_insertItem(dataSet, dataPath, dialog, data) {
 			yxbz : true
 		};
 	}
-	dataSet.getData(dataPath).insert(data);
-	if (dialog) {
-		dialog.show();
+	var list = dataSet.getData(dataPath);
+	if (list) {
+		list.insert(data);
+		if (dialog) {
+			dialog.show();
+		}
+	} else {
+		dorado.MessageBox.alert('不能添加数据。');
 	}
 }
 

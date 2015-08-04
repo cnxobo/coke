@@ -316,7 +316,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		deleteEntity(getSession(), baseEntity, user);
 	}
 
-	public static void insertEntity(Session session, IBase<?> baseEntity, IUser user) {
+	public void insertEntity(Session session, IBase<?> baseEntity, IUser user) {
 		if (user == null) {
 			user = ContextHolder.getLoginUser();
 		}
@@ -366,7 +366,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 
 	}
 
-	public static void updateEntity(Session session, IBase<?> baseEntity, IUser user) {
+	public void updateEntity(Session session, IBase<?> baseEntity, IUser user) {
 		if (user == null) {
 			user = ContextHolder.getLoginUser();
 		}
@@ -376,7 +376,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		session.saveOrUpdate(baseEntity);
 	}
 
-	public static void deleteEntity(Session session, IBase<?> baseEntity, IUser user) {
+	public void deleteEntity(Session session, IBase<?> baseEntity, IUser user) {
 		if (user == null) {
 			user = ContextHolder.getLoginUser();
 		}
