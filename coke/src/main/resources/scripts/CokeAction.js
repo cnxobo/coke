@@ -182,3 +182,26 @@ function $xa_openUrl(link, title) {
 		window.open(link, "_blank");
 	}
 }
+
+function $xa_dataRowClick(rowList, clickCallback, doubleClickCallback) {
+	var timer;
+
+	var singleClick = function() {
+		clearTimeout(timer);
+		timer = setTimeout(function() {
+			if (clickCallback instanceof Function) {
+				clickCallback();
+			}
+		}, 200);
+	}
+
+	var doubleClick = function() {
+		clearTimeout(timer);
+		if (doubleClickCallback instanceof Function) {
+			doubleClickCallback();
+		}
+	}
+
+	rowList.addListener("onDataRowClick", singleClick);
+	rowList.addListener("onDataRowDoubleClick", doubleClick);
+}

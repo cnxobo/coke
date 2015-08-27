@@ -11,6 +11,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
+import org.xobo.coke.model.IBase;
 import org.xobo.coke.service.PinyinQueryService;
 
 import com.bstek.dorado.data.provider.And;
@@ -42,6 +43,10 @@ public class QueryCriteriaDoradoToHibernate {
 				buildCriterions(criteria.getCriterions(), dc, entityClass);
 			}
 			buildOrder(criteria.getOrders(), dc);
+		}
+
+		if (IBase.class.isAssignableFrom(entityClass)) {
+			dc.add(Restrictions.eq("deleted", false));
 		}
 		return dc;
 	}

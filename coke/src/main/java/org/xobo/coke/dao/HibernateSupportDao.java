@@ -58,7 +58,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		return (T) criteria.uniqueResult();
 	}
 
-	public Collection<?> load(Map<String, Object> queryParameter, Criteria criteria, Class<?> entityClass) {
+	public <T> Collection<T> load(Map<String, Object> queryParameter, Criteria criteria, Class<T> entityClass) {
 		return load(null, queryParameter, null, criteria, entityClass);
 	}
 
@@ -66,7 +66,8 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		load(page, queryParameter, null, criteria, entityClass);
 	}
 
-	public Collection<?> load(Page<?> page, Map<String, Object> queryParameter,
+	@SuppressWarnings("unchecked")
+	public <T> Collection<T> load(Page<T> page, Map<String, Object> queryParameter,
 			Map<String, PropertyWrapper> propertyOperatorMap, Criteria criteria, Class<?> entityClass) {
 		DetachedCriteria detachedCriteria = buildDetachedCriteria(queryParameter, propertyOperatorMap, criteria,
 				entityClass);
@@ -74,7 +75,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 			this.pagingQuery(page, detachedCriteria);
 			return page.getEntities();
 		} else {
-			return this.query(detachedCriteria);
+			return (Collection<T>) this.query(detachedCriteria);
 		}
 	}
 
