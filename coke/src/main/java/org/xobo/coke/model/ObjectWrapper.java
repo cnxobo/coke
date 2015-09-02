@@ -39,12 +39,4 @@ public class ObjectWrapper {
 		this.value.put(key, value);
 	}
 
-	public Map<String, Object> getValue() {
-		return value;
-	}
-
-	public void putAll(Map<String, Object> m) {
-		value.putAll(m);
-	}
-
 }
