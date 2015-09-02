@@ -8,8 +8,16 @@ import org.apache.commons.beanutils.BeanUtils;
 public class ObjectWrapper {
 	private Map<String, Object> value;
 
-	@SuppressWarnings("unchecked")
+	public ObjectWrapper() {
+		value = new HashMap<String, Object>();
+	}
+
 	public ObjectWrapper(Object value) {
+		initValue(value);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void initValue(Object value) {
 		Map<String, Object> entity = new HashMap<String, Object>();
 		if (!(value instanceof Map)) {
 			try {
