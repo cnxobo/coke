@@ -1,4 +1,4 @@
-package org.xobo.coke.service.impl;
+package org.xobo.coke.querysupporter.service.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,21 +11,23 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-import org.xobo.coke.entity.PropertyWrapper;
-import org.xobo.coke.service.QueryPropertyWrapperService;
+import org.xobo.coke.querysupporter.model.PropertyWrapper;
+import org.xobo.coke.querysupporter.service.DoradoCriteriaBuilder;
+import org.xobo.coke.querysupporter.service.QueryPropertyWrapperService;
 
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.provider.Criterion;
 import com.bstek.dorado.data.provider.filter.FilterOperator;
 import com.bstek.dorado.data.provider.filter.SingleValueFilterCriterion;
 
-@Service(QueryParameterToDcriteria.BEAN_ID)
-public class QueryParameterToDcriteria {
+@Service(DoradoCriteriaBuilderImpl.BEAN_ID)
+public class DoradoCriteriaBuilderImpl implements DoradoCriteriaBuilder {
 	public static final String BEAN_ID = "coke.parameterToDcriteria";
 
 	@Resource(name = QueryPropertyWrapperService.BEAN_ID)
 	private QueryPropertyWrapperService propertyWrapperService;
 
+	@Override
 	public Criteria mergeQueryParameterCriteria(Map<String, Object> queryParameter,
 			Map<String, PropertyWrapper> propertyOperatorMap, Criteria criteria, Class<?> entityClass) {
 		if (criteria == null) {
@@ -35,6 +37,7 @@ public class QueryParameterToDcriteria {
 		return criteria;
 	}
 
+	@Override
 	public List<Criterion> extractQueryParameter(Map<String, Object> queryParameter,
 			Map<String, PropertyWrapper> propertyOperatorMap, Class<?> entityClass) {
 

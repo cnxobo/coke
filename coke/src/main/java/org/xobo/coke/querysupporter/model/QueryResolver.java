@@ -1,4 +1,4 @@
-package org.xobo.coke.dao.model;
+package org.xobo.coke.querysupporter.model;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package org.xobo.coke.service.impl;
+package org.xobo.coke.querysupporter.service.impl;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -16,11 +16,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xobo.coke.dao.CokeHibernate;
-import org.xobo.coke.service.ReflectionRegister;
+import org.xobo.coke.querysupporter.service.ReflectionRegister;
 import org.xobo.coke.utility.BeanReflectionUtils;
 
 import com.bstek.dorado.core.EngineStartupListener;
 
+/**
+ * 加载Hibernate实体的所有属性
+ * 
+ * @author bing
+ * 
+ */
 @Service
 public class HibernateEntityEnhancerImpl extends EngineStartupListener {
 

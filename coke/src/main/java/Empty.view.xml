@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+          <Panel>
+          <Buttons/>
+          <Children>
+            <ToolBar>
+              <ToolBarButton>
+                <Property name="caption">添加</Property>
+                <Property name="iconClass">fa fa-plus</Property>
+              </ToolBarButton>
+              <ToolBarButton>
+                <Property name="caption">编辑</Property>
+                <Property name="iconClass">fa fa-pencil</Property>
+              </ToolBarButton>
+              <ToolBarButton>
+                <Property name="caption">删除</Property>
+                <Property name="iconClass">fa fa-minus</Property>
+              </ToolBarButton>
+              <Fill/>
+              <DataPilot/>
+            </ToolBar>
+            <DataGrid/>
+            <Dialog>
+              <Buttons>
+                <Button>
+                  <Property name="iconClass">fa fa-check</Property>
+                  <Property name="caption">保存</Property>
+                </Button>
+                <Button>
+                  <Property name="iconClass">fa fa-times</Property>
+                  <Property name="caption">取消</Property>
+                </Button>
+              </Buttons>
+              <Children>
+                <AutoForm/>
+              </Children>
+              <Tools/>
+            </Dialog>
+          </Children>
+          <Tools/>
+        </Panel>
+ </View>
+</ViewConfig>

@@ -18,7 +18,7 @@ import org.springframework.util.StringUtils;
 import org.xobo.coke.dao.CokeHibernate;
 import org.xobo.coke.entity.PinyinConverter;
 import org.xobo.coke.model.Pinyin;
-import org.xobo.coke.service.impl.PinyinQueryServiceImpl;
+import org.xobo.coke.querysupporter.service.impl.SynonymServiceImpl;
 import org.xobo.coke.utility.PinyinUtility;
 
 import com.bstek.dorado.annotation.DataProvider;
@@ -30,7 +30,7 @@ public class PinyinMaintain {
 	@DataProvider
 	public Collection<PinyinConverter> loadPinyinConverters() {
 		Collection<PinyinConverter> pinyinEntityList = new ArrayList<PinyinConverter>();
-		Collection<Entry<Class<?>, Map<String, Collection<String>>>> clazzList = PinyinQueryServiceImpl.getPinyinmap()
+		Collection<Entry<Class<?>, Map<String, Collection<String>>>> clazzList = SynonymServiceImpl.getPinyinmap()
 				.getData().entrySet();
 		for (Entry<Class<?>, Map<String, Collection<String>>> clazz : clazzList) {
 			PinyinConverter pinyinConverter = new PinyinConverter();

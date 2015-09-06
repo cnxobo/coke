@@ -1,4 +1,4 @@
-package org.xobo.coke.service.impl;
+package org.xobo.coke.querysupporter.service.impl;
 
 import java.util.Collection;
 
@@ -12,7 +12,9 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 import org.xobo.coke.model.IBase;
-import org.xobo.coke.service.PinyinQueryService;
+import org.xobo.coke.querysupporter.service.HibernateCriteriaBuilder;
+import org.xobo.coke.querysupporter.service.SynonymService;
+import org.xobo.coke.service.impl.ObjectRelationQuery;
 
 import com.bstek.dorado.data.provider.And;
 import com.bstek.dorado.data.provider.Criteria;
@@ -22,15 +24,18 @@ import com.bstek.dorado.data.provider.Order;
 import com.bstek.dorado.data.provider.filter.FilterOperator;
 import com.bstek.dorado.data.provider.filter.SingleValueFilterCriterion;
 
-@Service(QueryCriteriaDoradoToHibernate.BEAN_ID)
-public class QueryCriteriaDoradoToHibernate {
+@Service(HibernateCriteriaBuilderImpl.BEAN_ID)
+public class HibernateCriteriaBuilderImpl implements HibernateCriteriaBuilder {
 
-	public static final String BEAN_ID = "coke.criteriaDoradoToHibernate";
+	@Resource(name = SynonymService.BEAN_ID)
+	private SynonymService synonymService;
 
+	@Override
 	public DetachedCriteria buildDetachedCriteria(Criteria criteria, Class<?> entityClass) {
 		return buildDetachedCriteria(criteria, entityClass, null);
 	}
 
+	@Override
 	public DetachedCriteria buildDetachedCriteria(Criteria criteria, Class<?> entityClass, String alias) {
 		DetachedCriteria dc = null;
 		if (StringUtils.isEmpty(alias)) {
@@ -49,70 +54,6 @@ public class QueryCriteriaDoradoToHibernate {
 			dc.add(Restrictions.eq("deleted", false));
 		}
 		return dc;
-	}
-
-	private void buildCriterions(Collection<com.bstek.dorado.data.provider.Criterion> criterions, DetachedCriteria dc,
-			Class<?> entityClass) {
-		for (com.bstek.dorado.data.provider.Criterion c : criterions) {
-			if (c instanceof SingleValueFilterCriterion) {
-				SingleValueFilterCriterion fc = (SingleValueFilterCriterion) c;
-
-				Collection<String> unionProperties = pinyinQueryService.get(entityClass, fc.getProperty());
-				if (unionProperties.isEmpty()) {
-					dc.add(buildCriterion(fc));
-				} else {
-					org.hibernate.criterion.Junction junction = Restrictions.disjunction();
-					Object value = "%" + fc.getValue() + "%";
-					for (String property : unionProperties) {
-						junction.add(Restrictions.like(property, value));
-					}
-					dc.add(junction);
-				}
-
-			} else if (c instanceof Junction) {
-				Junction jun = (Junction) c;
-				org.hibernate.criterion.Junction junction = null;
-				if (jun instanceof Or) {
-					junction = Restrictions.disjunction();
-				} else if (jun instanceof And) {
-					junction = Restrictions.conjunction();
-				}
-				Collection<com.bstek.dorado.data.provider.Criterion> subCriterions = jun.getCriterions();
-				if (subCriterions != null) {
-					buildCriterions(subCriterions, junction);
-				}
-				dc.add(junction);
-			} else if (c instanceof ObjectRelationQuery) {
-			}
-		}
-	}
-
-	@Resource(name = PinyinQueryService.BEAN_ID)
-	private PinyinQueryService pinyinQueryService;
-
-	private void buildCriterions(Collection<com.bstek.dorado.data.provider.Criterion> criterions,
-			org.hibernate.criterion.Junction dc) {
-		for (com.bstek.dorado.data.provider.Criterion c : criterions) {
-			if (c instanceof SingleValueFilterCriterion) {
-				SingleValueFilterCriterion fc = (SingleValueFilterCriterion) c;
-
-				dc.add(buildCriterion(fc));
-			}
-			if (c instanceof Junction) {
-				Junction jun = (Junction) c;
-				org.hibernate.criterion.Junction junction = null;
-				if (jun instanceof Or) {
-					junction = Restrictions.disjunction();
-				} else if (jun instanceof And) {
-					junction = Restrictions.conjunction();
-				}
-				Collection<com.bstek.dorado.data.provider.Criterion> subCriterions = jun.getCriterions();
-				if (subCriterions != null) {
-					buildCriterions(subCriterions, dc);
-				}
-				dc.add(junction);
-			}
-		}
 	}
 
 	private Criterion buildCriterion(SingleValueFilterCriterion fc) {
@@ -144,12 +85,65 @@ public class QueryCriteriaDoradoToHibernate {
 		return result;
 	}
 
-	protected String buildOperator(FilterOperator filterOperator) {
-		String operator = "like";
-		if (filterOperator != null) {
-			operator = filterOperator.toString();
+	private void buildCriterions(Collection<com.bstek.dorado.data.provider.Criterion> criterions, DetachedCriteria dc,
+			Class<?> entityClass) {
+		for (com.bstek.dorado.data.provider.Criterion c : criterions) {
+			if (c instanceof SingleValueFilterCriterion) {
+				SingleValueFilterCriterion fc = (SingleValueFilterCriterion) c;
+
+				Collection<String> unionProperties = synonymService.find(entityClass, fc.getProperty());
+				if (unionProperties.isEmpty()) {
+					dc.add(buildCriterion(fc));
+				} else {
+					org.hibernate.criterion.Junction junction = Restrictions.disjunction();
+					Object value = "%" + fc.getValue() + "%";
+					for (String property : unionProperties) {
+						junction.add(Restrictions.like(property, value));
+					}
+					dc.add(junction);
+				}
+
+			} else if (c instanceof Junction) {
+				Junction jun = (Junction) c;
+				org.hibernate.criterion.Junction junction = null;
+				if (jun instanceof Or) {
+					junction = Restrictions.disjunction();
+				} else if (jun instanceof And) {
+					junction = Restrictions.conjunction();
+				}
+				Collection<com.bstek.dorado.data.provider.Criterion> subCriterions = jun.getCriterions();
+				if (subCriterions != null) {
+					buildCriterions(subCriterions, junction);
+				}
+				dc.add(junction);
+			} else if (c instanceof ObjectRelationQuery) {
+			}
 		}
-		return operator;
+	}
+
+	private void buildCriterions(Collection<com.bstek.dorado.data.provider.Criterion> criterions,
+			org.hibernate.criterion.Junction dc) {
+		for (com.bstek.dorado.data.provider.Criterion c : criterions) {
+			if (c instanceof SingleValueFilterCriterion) {
+				SingleValueFilterCriterion fc = (SingleValueFilterCriterion) c;
+
+				dc.add(buildCriterion(fc));
+			}
+			if (c instanceof Junction) {
+				Junction jun = (Junction) c;
+				org.hibernate.criterion.Junction junction = null;
+				if (jun instanceof Or) {
+					junction = Restrictions.disjunction();
+				} else if (jun instanceof And) {
+					junction = Restrictions.conjunction();
+				}
+				Collection<com.bstek.dorado.data.provider.Criterion> subCriterions = jun.getCriterions();
+				if (subCriterions != null) {
+					buildCriterions(subCriterions, dc);
+				}
+				dc.add(junction);
+			}
+		}
 	}
 
 	private void buildOrder(Collection<Order> orders, DetachedCriteria dc) {
@@ -162,6 +156,14 @@ public class QueryCriteriaDoradoToHibernate {
 				}
 			}
 		}
+	}
+
+	protected String buildOperator(FilterOperator filterOperator) {
+		String operator = "like";
+		if (filterOperator != null) {
+			operator = filterOperator.toString();
+		}
+		return operator;
 	}
 
 }

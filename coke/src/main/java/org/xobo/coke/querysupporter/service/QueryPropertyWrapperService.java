@@ -1,8 +1,8 @@
-package org.xobo.coke.service;
+package org.xobo.coke.querysupporter.service;
 
 import java.util.Map;
 
-import org.xobo.coke.entity.PropertyWrapper;
+import org.xobo.coke.querysupporter.model.PropertyWrapper;
 
 public interface QueryPropertyWrapperService {
 	static final String BEAN_ID = "coke.queryPropertyWrapperLoaderService";

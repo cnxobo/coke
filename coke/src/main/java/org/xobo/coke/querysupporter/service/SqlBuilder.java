@@ -1,13 +1,13 @@
-package org.xobo.coke.service;
+package org.xobo.coke.querysupporter.service;
 
 import java.util.Map;
 
-import org.xobo.coke.dao.model.QueryResolver;
+import org.xobo.coke.querysupporter.model.QueryResolver;
 
 import com.bstek.dorado.data.provider.Criteria;
 
-public interface QueryDcriteriaToSql {
-	public static final String BEAN_ID = "coke.dcriteriaToSql";
+public interface SqlBuilder {
+	public static final String BEAN_ID = "coke.sqlBuilder";
 
 	QueryResolver extractQuery(Class<?> clazz, Criteria criteria, Map<String, Object> queryParameter, String alias);
 

@@ -14,6 +14,12 @@ import org.springframework.util.ClassUtils;
 
 public class BeanReflectionUtils {
 
+	/**
+	 * 加载Clazz及其父类的Fields
+	 * 
+	 * @param clazz
+	 * @return
+	 */
 	public static Collection<Field> loadClassFields(Class<?> clazz) {
 		Collection<Field> fields = new ArrayList<Field>();
 		Class<?> currentClazz = clazz;

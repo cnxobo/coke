@@ -1,4 +1,4 @@
-package org.xobo.coke.service.impl;
+package org.xobo.coke.querysupporter.service.impl;
 
 import java.util.Collection;
 import java.util.List;
@@ -8,9 +8,9 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-import org.xobo.coke.dao.model.QueryResolver;
-import org.xobo.coke.service.PinyinQueryService;
-import org.xobo.coke.service.QueryDcriteriaToSql;
+import org.xobo.coke.querysupporter.model.QueryResolver;
+import org.xobo.coke.querysupporter.service.SqlBuilder;
+import org.xobo.coke.querysupporter.service.SynonymService;
 
 import com.bstek.dorado.data.provider.Criteria;
 import com.bstek.dorado.data.provider.Criterion;
@@ -20,18 +20,16 @@ import com.bstek.dorado.data.provider.Order;
 import com.bstek.dorado.data.provider.filter.FilterOperator;
 import com.bstek.dorado.data.provider.filter.SingleValueFilterCriterion;
 
-@Service(QueryDcriteriaToSql.BEAN_ID)
-public class QueryDcriteriaToSqlImpl implements QueryDcriteriaToSql {
+@Service(SqlBuilder.BEAN_ID)
+public class SqlBuilderImpl implements SqlBuilder {
 
-	@Resource(name = QueryParameterToDcriteria.BEAN_ID)
-	private QueryParameterToDcriteria parameterToCriteria;
+	@Resource(name = DoradoCriteriaBuilderImpl.BEAN_ID)
+	private DoradoCriteriaBuilderImpl doradoCriteriaBuilder;
 
-	public QueryResolver extractQuery(Class<?> clazz, Criteria criteria, Map<String, Object> queryParameter,
-			String alias) {
-		criteria = parameterToCriteria.mergeQueryParameterCriteria(queryParameter, null, criteria, clazz);
-		return extractCriteria(clazz, criteria, alias);
-	}
+	@Resource(name = SynonymService.BEAN_ID)
+	private SynonymService synonymService;
 
+	@Override
 	public QueryResolver extractCriteria(Class<?> clazz, Criteria criteria, String alias) {
 		int parameterNameCount = 0;
 		if (criteria == null) {
@@ -76,25 +74,11 @@ public class QueryDcriteriaToSqlImpl implements QueryDcriteriaToSql {
 		return result;
 	}
 
-	void singleValueFilterCriterion(StringBuilder sb, Map<String, Object> valueMap, int parameterNameCount,
-			String alias, String propertyName, String operator, Object value) {
-		if (StringUtils.isNotEmpty(alias)) {
-			sb.append(" " + alias + "." + propertyName);
-		} else {
-			sb.append(" " + propertyName);
-		}
-		sb.append(" " + processLike(operator) + " ");
-		String prepareName = propertyName + "_" + parameterNameCount + "_";
-		sb.append(" :" + prepareName + " ");
-		if (operator.equals("like")) {
-			valueMap.put(prepareName, "%" + value + "%");
-		} else if (operator.startsWith("*")) {
-			valueMap.put(prepareName, "%" + value);
-		} else if (operator.endsWith("*")) {
-			valueMap.put(prepareName, value + "%");
-		} else {
-			valueMap.put(prepareName, value);
-		}
+	@Override
+	public QueryResolver extractQuery(Class<?> clazz, Criteria criteria, Map<String, Object> queryParameter,
+			String alias) {
+		criteria = doradoCriteriaBuilder.mergeQueryParameterCriteria(queryParameter, null, criteria, clazz);
+		return extractCriteria(clazz, criteria, alias);
 	}
 
 	private int buildCriterion(Class<?> clazz, StringBuilder sb, Criterion c, Map<String, Object> valueMap,
@@ -105,7 +89,7 @@ public class QueryDcriteriaToSqlImpl implements QueryDcriteriaToSql {
 			String operator = buildOperator(fc.getFilterOperator());
 			String propertyName = buildFieldName(fc.getProperty());
 
-			Collection<String> unionPropertyList = pinyinQueryService.get(clazz, propertyName);
+			Collection<String> unionPropertyList = synonymService.find(clazz, propertyName);
 
 			if (unionPropertyList.isEmpty()) {
 				singleValueFilterCriterion(sb, valueMap, parameterNameCount, alias, propertyName, operator,
@@ -159,6 +143,10 @@ public class QueryDcriteriaToSqlImpl implements QueryDcriteriaToSql {
 		return result;
 	}
 
+	protected String buildFieldName(String name) {
+		return name;
+	}
+
 	protected String buildOperator(FilterOperator filterOperator) {
 		String operator = "like";
 		if (filterOperator != null) {
@@ -167,11 +155,25 @@ public class QueryDcriteriaToSqlImpl implements QueryDcriteriaToSql {
 		return operator;
 	}
 
-	protected String buildFieldName(String name) {
-		return name;
+	void singleValueFilterCriterion(StringBuilder sb, Map<String, Object> valueMap, int parameterNameCount,
+			String alias, String propertyName, String operator, Object value) {
+		if (StringUtils.isNotEmpty(alias)) {
+			sb.append(" " + alias + "." + propertyName);
+		} else {
+			sb.append(" " + propertyName);
+		}
+		sb.append(" " + processLike(operator) + " ");
+		String prepareName = propertyName + "_" + parameterNameCount + "_";
+		sb.append(" :" + prepareName + " ");
+		if (operator.equals("like")) {
+			valueMap.put(prepareName, "%" + value + "%");
+		} else if (operator.startsWith("*")) {
+			valueMap.put(prepareName, "%" + value);
+		} else if (operator.endsWith("*")) {
+			valueMap.put(prepareName, value + "%");
+		} else {
+			valueMap.put(prepareName, value);
+		}
 	}
-
-	@Resource(name = PinyinQueryService.BEAN_ID)
-	private PinyinQueryService pinyinQueryService;
 
 }

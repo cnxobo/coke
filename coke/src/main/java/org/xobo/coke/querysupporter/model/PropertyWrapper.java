@@ -1,4 +1,4 @@
-package org.xobo.coke.entity;
+package org.xobo.coke.querysupporter.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;

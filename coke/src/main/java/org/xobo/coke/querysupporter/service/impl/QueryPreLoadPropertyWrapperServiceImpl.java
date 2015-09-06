@@ -1,4 +1,4 @@
-package org.xobo.coke.service.impl;
+package org.xobo.coke.querysupporter.service.impl;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xobo.coke.dataType.MapMap;
-import org.xobo.coke.entity.PropertyWrapper;
 import org.xobo.coke.model.UnkonwDataType;
-import org.xobo.coke.service.QueryPropertyWrapperService;
-import org.xobo.coke.service.ReflectionRegister;
+import org.xobo.coke.querysupporter.model.PropertyWrapper;
+import org.xobo.coke.querysupporter.service.QueryPropertyWrapperService;
+import org.xobo.coke.querysupporter.service.ReflectionRegister;
 
 import com.bstek.dorado.data.provider.filter.FilterOperator;
 import com.bstek.dorado.data.type.DataType;

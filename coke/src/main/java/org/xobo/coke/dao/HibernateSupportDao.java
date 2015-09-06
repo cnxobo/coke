@@ -21,18 +21,18 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.ResultTransformer;
 import org.springframework.stereotype.Service;
 import org.xobo.coke.entity.PersistWrapper;
-import org.xobo.coke.entity.PropertyWrapper;
 import org.xobo.coke.entity.ReferenceWrapper;
 import org.xobo.coke.model.Company;
 import org.xobo.coke.model.DetailModel;
 import org.xobo.coke.model.IBase;
 import org.xobo.coke.model.IDetail;
 import org.xobo.coke.model.PathModel;
+import org.xobo.coke.querysupporter.model.PropertyWrapper;
+import org.xobo.coke.querysupporter.service.HibernateCriteriaBuilder;
+import org.xobo.coke.querysupporter.service.impl.DoradoCriteriaBuilderImpl;
 import org.xobo.coke.service.PersistAction;
 import org.xobo.coke.service.impl.CriteriaImplHelper;
 import org.xobo.coke.service.impl.NopPersistAction;
-import org.xobo.coke.service.impl.QueryCriteriaDoradoToHibernate;
-import org.xobo.coke.service.impl.QueryParameterToDcriteria;
 import org.xobo.coke.utility.BeanReflectionUtils;
 
 import com.bstek.bdf2.core.business.IUser;
@@ -47,8 +47,8 @@ import com.bstek.dorado.data.provider.Page;
 public class HibernateSupportDao<K> extends HibernateDao {
 	public static final String BEAN_ID = "cola.hibernateSupportDao";
 
-	@Resource(name = QueryCriteriaDoradoToHibernate.BEAN_ID)
-	private QueryCriteriaDoradoToHibernate criteriaDoradoToHibernate;
+	@Resource(name = HibernateCriteriaBuilder.BEAN_ID)
+	private HibernateCriteriaBuilder criteriaBuilder;
 
 	@SuppressWarnings("unchecked")
 	public <T> T findPropertyValue(Class<?> clazz, String uniqueProperty, Object value, String property) {
@@ -88,11 +88,11 @@ public class HibernateSupportDao<K> extends HibernateDao {
 			Map<String, PropertyWrapper> propertyOperatorMap, Criteria criteria, Class<?> entityClass) {
 		criteria = parameterToCriteria.mergeQueryParameterCriteria(queryParameter, propertyOperatorMap, criteria,
 				entityClass);
-		return criteriaDoradoToHibernate.buildDetachedCriteria(criteria, entityClass);
+		return criteriaBuilder.buildDetachedCriteria(criteria, entityClass);
 	}
 
-	@Resource(name = QueryParameterToDcriteria.BEAN_ID)
-	private QueryParameterToDcriteria parameterToCriteria;
+	@Resource(name = DoradoCriteriaBuilderImpl.BEAN_ID)
+	private DoradoCriteriaBuilderImpl parameterToCriteria;
 
 	public void find(Page<?> page, Criteria criteria, Class<?> entityClass) {
 		DetachedCriteria detachedCriteria = this.buildDetachedCriteria(criteria, entityClass);
