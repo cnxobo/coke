@@ -27,7 +27,7 @@ function $xa_insertChildItem(dataTree, childrenName, dialog, data) {
 	var currentEntity = dataTree.get("currentEntity");
 	if (currentEntity) {
 		dataTree.get("currentNode").expand();
-		// newEntity = currentEntity.createChild(childrenName, data);
+//		newEntity = currentEntity.createChild(childrenName, data);
 		newEntity = currentEntity.get("children").insert(data);
 		dataTree.set("currentEntity", newEntity);
 		setTimeout(function() {

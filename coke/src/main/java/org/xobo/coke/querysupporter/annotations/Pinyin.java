@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
 public @interface Pinyin {
-	String quan();
+	String quan() default "";
 
-	String jian();
+	String jian() default "";
 }
