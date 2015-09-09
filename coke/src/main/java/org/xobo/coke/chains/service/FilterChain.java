@@ -7,7 +7,7 @@ public class FilterChain<K, V> implements Filter<K, V> {
 	List<Filter<K, V>> filters = new ArrayList<Filter<K, V>>();
 	int index = 0;
 
-	public FilterChain<K, V> addDataFilter(Filter<K, V> f) {
+	public FilterChain<K, V> addFilter(Filter<K, V> f) {
 		filters.add(f);
 		return this;
 	}
