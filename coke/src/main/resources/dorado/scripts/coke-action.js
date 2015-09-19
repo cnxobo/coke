@@ -1,7 +1,3 @@
-/**
- * 
- */
-
 function $xa_insertItem(dataSet, dataPath, dialog, data) {
 	if (!data) {
 		data = {
@@ -27,7 +23,7 @@ function $xa_insertChildItem(dataTree, childrenName, dialog, data) {
 	var currentEntity = dataTree.get("currentEntity");
 	if (currentEntity) {
 		dataTree.get("currentNode").expand();
-//		newEntity = currentEntity.createChild(childrenName, data);
+		// newEntity = currentEntity.createChild(childrenName, data);
 		newEntity = currentEntity.get("children").insert(data);
 		dataTree.set("currentEntity", newEntity);
 		setTimeout(function() {
@@ -192,7 +188,7 @@ function $xa_dataRowClick(rowList, clickCallback, doubleClickCallback) {
 			if (clickCallback instanceof Function) {
 				clickCallback();
 			}
-		}, 200);
+		}, 100);
 	}
 
 	var doubleClick = function() {
@@ -204,4 +200,29 @@ function $xa_dataRowClick(rowList, clickCallback, doubleClickCallback) {
 
 	rowList.addListener("onDataRowClick", singleClick);
 	rowList.addListener("onDataRowDoubleClick", doubleClick);
+}
+
+function travelObject(parent, property, callback) {
+	var value;
+	if (property || property === 0) {
+		value = parent[property];
+	} else {
+		value = parent;
+	}
+	if (jQuery.isPlainObject(value)) {
+		for ( var p in value) {
+			travelObject(value, p, callback);
+		}
+	} else if (jQuery.isArray(value)) {
+		for (var i = 0; i < value.length; i++) {
+			travelObject(value, i, callback);
+		}
+	}
+
+	if (property) {
+		if (callback && callback instanceof Function) {
+			callback(value, property);
+		}
+	}
+
 }

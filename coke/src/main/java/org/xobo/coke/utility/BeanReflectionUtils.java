@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javassist.util.proxy.ProxyObject;
 import net.sf.cglib.proxy.Proxy;
@@ -11,6 +13,8 @@ import net.sf.cglib.proxy.Proxy;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.util.ClassUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BeanReflectionUtils {
 
@@ -42,6 +46,19 @@ public class BeanReflectionUtils {
 			return clazz.getSuperclass();
 		}
 		return clazz;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> entityToMap(Object value) {
+		Map<String, Object> entity = new LinkedHashMap<String, Object>();
+		if (value instanceof Map) {
+			entity.putAll((Map<? extends String, ? extends Object>) value);
+		} else if (value != null) {
+			ObjectMapper m = new ObjectMapper();
+			Map<String, Object> props = m.convertValue(value, Map.class);
+			entity.putAll(props);
+		}
+		return entity;
 	}
 
 	public static void mergeObjectWithAppointedProperties(Object target, Object source, String[] properties) {

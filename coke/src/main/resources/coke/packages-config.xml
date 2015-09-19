@@ -8,8 +8,23 @@
 	</Patterns>
 
 	<Packages>
-		<Package name="CokeAction" pattern="js">
-			classpath:scripts/CokeAction
+		<Package name="CokeAction" pattern="dorado-js">
+			scripts/coke-action
+		</Package>
+		<Package name="jCookie" pattern="dorado-js" depends="jquery">
+			scripts/jquery.cookie
+		</Package>
+		<Package name="desktopNotify" pattern="dorado-js">
+			scripts/desktop-notify
+		</Package>
+		<Package name="webMessage" pattern="dorado-js">
+			scripts/web-message
+		</Package>
+		<Package name="SearchTree" pattern="dorado-js">
+			scripts/search-tree
+		</Package>
+		<Package name="CopyData" pattern="dorado-js" depends="webMessage">
+			scripts/copy-data
 		</Package>
 	</Packages>
 </config>
