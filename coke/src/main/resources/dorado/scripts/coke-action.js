@@ -71,12 +71,29 @@ function $xa_deleteItem(dataSet, dataPath, updateAction, callBack) {
 	}
 }
 
-function $xa_deleteItems(dataGrid, updateAction, callBack) {
+function $xa_deleteItems(dataGrid, updateAction, config) {
+	var callBack;
+	if (!config) {
+		config = {};
+	}
+	if (jQuery.isFunction(config)) {
+		callBack = config;
+	}
+
 	var selection = dataGrid.get("selection");
 	if (!selection || selection.length == 0) {
 		var list = dataGrid.get("dataSet").getData(dataGrid.get("dataPath"));
 		if (list && list.current) {
-			dorado.MessageBox.confirm("确认要删除当前记录么？", {
+			var name;
+			if (config.display) {
+				name = list.current.get(config.display);
+			}
+			if (name) {
+				var content = "确认要删除 " + name + " 。";
+			} else {
+				content = "确认要删除。";
+			}
+			dorado.MessageBox.confirm(content, {
 				icon : "WARNING",
 				title : "删除记录",
 				callback : function() {
@@ -85,10 +102,20 @@ function $xa_deleteItems(dataGrid, updateAction, callBack) {
 				}
 			});
 		} else {
-			dorado.widget.NotifyTipManager.notify("请选择要删除的记录!");
+			dorado.widget.NotifyTipManager.notify("请选择要删除的记录。");
 		}
 	} else {
-		dorado.MessageBox.confirm("确认要删除选中的记录么？", {
+		var names = [];
+		if (config.display) {
+			selection.each(function(item) {
+				names.push(item.get(config.display))
+			});
+		}
+		var content = "确认要删除选中的记录。";
+		if (names.length) {
+			content = "确认要删除选中的记录: \n\t" + names.join(",") + " 。";
+		}
+		dorado.MessageBox.confirm(content, {
 			icon : "WARNING",
 			title : "删除记录",
 			callback : function() {

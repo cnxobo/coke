@@ -136,7 +136,7 @@ coke.webmessage.addResolver("OnlineMessage", function(message) {
 	var ids = [];
 	ids.push(data.id);
 	if (content) {
-		webmessage.sendDesktopNotification(title, content);
-		webmessage.sendNotify(title, content, link, ids);
+		coke.webmessage.sendDesktopNotification(title, content);
+		coke.webmessage.sendNotify(title, content, link, ids);
 	}
 });
