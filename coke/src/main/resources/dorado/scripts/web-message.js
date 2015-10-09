@@ -118,7 +118,7 @@
 		getMessageResolvers : getMessageResolvers
 	};
 	if (jQuery.isFunction(Object.seal)) {
-		Object.seal(win.webmessage);
+		Object.seal(win.coke.webmessage);
 	}
 }(window));
 
@@ -134,6 +134,7 @@ coke.webmessage.addResolver("OnlineMessage", function(message) {
 	var content = data.content;
 	var link = data.link;
 	var ids = [];
+	debugger;
 	ids.push(data.id);
 	if (content) {
 		coke.webmessage.sendDesktopNotification(title, content);

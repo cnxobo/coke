@@ -31,6 +31,20 @@ public class MethodUtils {
 
 	private static Map<Method, String[]> parameterNamesMap = new ConcurrentHashMap<Method, String[]>();
 
+	/**
+	 * 反射调用指定方法
+	 * 
+	 * @param target
+	 * @param methodName
+	 * @param parameter
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 * @throws InstantiationException
+	 */
 	public static Object invokeMethod(Object target, String methodName, Map<String, Object> parameter)
 			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException,
 			NoSuchMethodException, InstantiationException {
@@ -113,7 +127,6 @@ public class MethodUtils {
 						value = collection;
 					}
 				}
-
 			}
 			realArgs[i] = value;
 		}
@@ -141,47 +154,57 @@ public class MethodUtils {
 		if (rootNode != null) {
 			for (int i = 0; i < parameterNames.length; i++) {
 				String name = parameterNames[i];
-				JsonNode valueNode = null;
-				valueNode = rootNode.get(name);
+				JsonNode valueNode = rootNode.get(name);
 
-				if (valueNode == null) {
+				if (valueNode == null && i == 0) {
 					valueNode = rootNode;
 				}
 
-				Object value = null;
-				Type ptype = parametersType[i];
-				if (ptype instanceof Class<?>) {
-					value = mapper.readValue(valueNode.toString(), (Class<?>) ptype);
-				} else if (ptype instanceof ParameterizedType) {
-					ParameterizedType parameterizedType = (ParameterizedType) ptype;
-					Type[] typeArguments = parameterizedType.getActualTypeArguments();
-					Type rawType = parameterizedType.getRawType();
-					if (typeArguments.length > 0) {
-						Type typeArgument = typeArguments[0];
-						Class<?> rt = (Class<?>) typeArgument;
-						if (rawType instanceof Class<?>) {
-							if (Collection.class.isAssignableFrom((Class<?>) rawType)) {
-								if (typeArguments.length > 0) {
-									JavaType javaType = mapper.getTypeFactory().constructParametrizedType(
-											ArrayList.class,
-											List.class, rt);
-									value = mapper.readValue(valueNode.toString(), javaType);
-								}
-							} else if (Map.class.isAssignableFrom((Class<?>) rawType)) {
-								JavaType javaType = mapper.getTypeFactory().constructParametrizedType(
-										LinkedHashMap.class,
-										Map.class, rt,
-										Object.class);
-								value = mapper.readValue(valueNode.toString(), javaType);
-							}
+				Object value = convertJsonNodeToValueOfTargetType(mapper, valueNode, parametersType[i]);
 
-						}
-					}
-				}
 				realArgs[i] = value;
 			}
 		}
 		return method.invoke(target, realArgs);
+	}
+
+	public static Object convertJsonNodeToValueOfTargetType(ObjectMapper mapper, JsonNode valueNode, Type type)
+			throws JsonParseException,
+			JsonMappingException, IOException {
+		if (valueNode == null) {
+			return null;
+		}
+
+		Object value = null;
+		if (type instanceof Class<?>) {
+			value = mapper.readValue(valueNode.toString(), (Class<?>) type);
+		} else if (type instanceof ParameterizedType) {
+			ParameterizedType parameterizedType = (ParameterizedType) type;
+			Type[] typeArguments = parameterizedType.getActualTypeArguments();
+			Type rawType = parameterizedType.getRawType();
+			if (typeArguments.length > 0) {
+				Type typeArgument = typeArguments[0];
+				Class<?> rt = (Class<?>) typeArgument;
+				if (rawType instanceof Class<?>) {
+					if (Collection.class.isAssignableFrom((Class<?>) rawType)) {
+						if (typeArguments.length > 0) {
+							JavaType javaType = mapper.getTypeFactory().constructParametrizedType(
+									ArrayList.class,
+									List.class, rt);
+							value = mapper.readValue(valueNode.toString(), javaType);
+						}
+					} else if (Map.class.isAssignableFrom((Class<?>) rawType)) {
+						JavaType javaType = mapper.getTypeFactory().constructParametrizedType(
+								LinkedHashMap.class,
+								Map.class, rt,
+								Object.class);
+						value = mapper.readValue(valueNode.toString(), javaType);
+					}
+
+				}
+			}
+		}
+		return value;
 	}
 
 }
