@@ -6,7 +6,7 @@ import javax.persistence.MappedSuperclass;
 import com.bstek.dorado.annotation.PropertyDef;
 
 @MappedSuperclass
-public interface PathModel<T> extends DetailModel<T> {
+public interface PathModel<T> extends IDetail<T> {
 	public static final String TypeSeparator = "/";
 
 	@Column(unique = true)

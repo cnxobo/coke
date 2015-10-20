@@ -9,6 +9,10 @@ import com.bstek.dorado.annotation.PropertyDef;
 @MappedSuperclass
 public abstract class BaseModel<K> implements IBase<String> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4982852528700515370L;
 	@PropertyDef(label = "创建人")
 	private String createUser;
 	@PropertyDef(label = "创建日期")

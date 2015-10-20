@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.xobo.coke.entity.PersistWrapper;
 import org.xobo.coke.entity.ReferenceWrapper;
 import org.xobo.coke.model.Company;
-import org.xobo.coke.model.DetailModel;
 import org.xobo.coke.model.IBase;
 import org.xobo.coke.model.IDetail;
 import org.xobo.coke.model.PathModel;
@@ -269,7 +268,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		if (properties != null && !properties.isEmpty()) {
 			for (ReferenceWrapper property : properties) {
 				Class<?> childClass = property.getClazz();
-				if (DetailModel.class.isAssignableFrom(childClass)) {
+				if (IDetail.class.isAssignableFrom(childClass)) {
 					result = session.createQuery("delete " + childClass.getName() + " c where c.parentId = :parentId")
 							.setParameter("parentId", parent.getId()).executeUpdate();
 				}
@@ -282,13 +281,13 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		if (entity instanceof IDetail<?>) {
 			K parentId = null;
 			if (parent == null) {
-				if (entity instanceof DetailModel<?>) {
-					parentId = ((DetailModel<K>) entity).getRoot();
+				if (entity instanceof IDetail<?>) {
+					parentId = ((IDetail<K>) entity).getRoot();
 				}
 			} else {
 				parentId = parent.getId();
 			}
-			((DetailModel<K>) entity).setParentId(parentId);
+			((IDetail<K>) entity).setParentId(parentId);
 		}
 		setPathValue(session, entity, parent);
 	}

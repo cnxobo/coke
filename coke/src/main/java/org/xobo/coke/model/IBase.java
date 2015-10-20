@@ -1,8 +1,9 @@
 package org.xobo.coke.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public interface IBase<T> {
+public interface IBase<T> extends Serializable {
 	public T getId();
 
 	public void setId(T id);
