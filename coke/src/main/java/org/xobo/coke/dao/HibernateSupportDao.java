@@ -330,7 +330,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
 		session.save(baseEntity);
 	}
 
-	private void setPathValue(Session session, IBase<K> baseEntity, IBase<K> parent) {
+	public void setPathValue(Session session, IBase<K> baseEntity, IBase<K> parent) {
 		if (baseEntity instanceof PathModel) {
 			PathModel<K> pathEntity = (PathModel<K>) baseEntity;
 			K parentId;
