@@ -156,7 +156,7 @@ public class MethodUtils {
 				String name = parameterNames[i];
 				JsonNode valueNode = rootNode.get(name);
 
-				if (valueNode == null && i == 0) {
+				if (valueNode == null && i == 0 && rootNode.size() > 0) {
 					valueNode = rootNode;
 				}
 

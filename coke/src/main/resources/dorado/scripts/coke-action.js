@@ -185,13 +185,17 @@ function $xa_resetQueryform(dataSetQuery, config) {
 	dataSetQuery.set("data", config);
 }
 
-function $xa_getSelections(dataGrid, allIfNoSelection) {
+function $xa_getSelections(dataGrid, type) {
 	var selection = dataGrid.get("selection");
 	var list;
 	if (selection && selection.length > 0) {
 		list = selection;
-	} else if (allIfNoSelection) {
+	} else if (type=="all") {
 		list = dataGrid.get("dataSet").getData(dataGrid.get("dataPath"));
+	} else if (type=="current") {
+		var current = dataGrid.get("dataSet").getData().current;
+		list = [];
+		list.push(current);
 	} else {
 		list = [];
 	}
@@ -215,7 +219,7 @@ function $xa_dataRowClick(rowList, clickCallback, doubleClickCallback) {
 			if (clickCallback instanceof Function) {
 				clickCallback();
 			}
-		}, 100);
+		}, 200);
 	}
 
 	var doubleClick = function() {
