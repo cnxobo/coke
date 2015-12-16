@@ -40,4 +40,15 @@ public class JSONUtil {
 		}
 	}
 
+	public static String prettyJSON(Object object) {
+		String json = null;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return json;
+	}
+
 }
