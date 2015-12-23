@@ -44,6 +44,16 @@ public class ListMap<K, V> {
 		return this;
 	}
 
+	public ListMap<K, V> addAll(K key, Collection<V> value) {
+		Collection<V> collection = data.get(key);
+		if (collection == null) {
+			collection = new LinkedHashSet<V>();
+			data.put(key, collection);
+		}
+		collection.addAll(value);
+		return this;
+	}
+
 	public Collection<V> remove(K key) {
 		return data.remove(key);
 	}

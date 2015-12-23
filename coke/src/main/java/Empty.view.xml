@@ -2,42 +2,57 @@
 <ViewConfig>
   <Arguments/>
   <Context/>
-  <Model/>
+  <Model>
+    <DataType name="Template"/>
+  </Model>
   <View>
     <Panel>
       <Buttons/>
       <Children>
         <ToolBar>
-          <ToolBarButton>
+          <ToolBarButton id="buttonAddTemplate">
             <Property name="caption">添加</Property>
             <Property name="iconClass">fa fa-plus</Property>
           </ToolBarButton>
-          <ToolBarButton>
+          <ToolBarButton id="buttonEditTemplate">
             <Property name="caption">编辑</Property>
             <Property name="iconClass">fa fa-pencil</Property>
           </ToolBarButton>
-          <ToolBarButton>
+          <ToolBarButton id="buttonDelTemplate">
             <Property name="caption">删除</Property>
             <Property name="iconClass">fa fa-minus</Property>
           </ToolBarButton>
           <Fill/>
-          <DataPilot/>
+          <DataPilot>
+            <Property name="itemCodes">pages,pageSize</Property>
+          </DataPilot>
         </ToolBar>
-        <DataSet id="dataSet1"/>
-        <DataGrid id="dataGrid1"/>
-        <Dialog id="dialog1">
+        <DataSet id="dataSetTemplate">
+          <Property name="dataType">[Template]</Property>
+          <Property name="dataProvider">#loadTemplates</Property>
+        </DataSet>
+        <DataGrid id="dataGridTemplate">
+          <Property name="dataSet">dataSetTemplate</Property>
+          <Property name="selectionMode">multiRows</Property>
+          <RowSelectorColumn/>
+          <RowNumColumn/>
+        </DataGrid>
+        <Dialog id="dialogTemplate">
           <Buttons>
-            <Button>
+            <Button id="buttonSaveTemplate">
               <Property name="iconClass">fa fa-check</Property>
               <Property name="caption">保存</Property>
             </Button>
-            <Button>
+            <Button id="buttonCancelTemplate">
               <Property name="iconClass">fa fa-times</Property>
               <Property name="caption">取消</Property>
             </Button>
           </Buttons>
           <Children>
-            <AutoForm/>
+            <AutoForm>
+              <Property name="dataSet">dataSetTemplate</Property>
+              <Property name="dataPath">#</Property>
+            </AutoForm>
           </Children>
           <Tools/>
         </Dialog>
