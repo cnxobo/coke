@@ -1,10 +1,14 @@
-package org.xobo.coke.view.pinyin;
+package org.xobo.coke.pinyin.view;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,6 +31,8 @@ import org.xobo.coke.utility.PinyinUtility;
 
 import com.bstek.dorado.annotation.DataProvider;
 import com.bstek.dorado.annotation.Expose;
+import com.github.stuxuhai.jpinyin.PinyinFormat;
+import com.github.stuxuhai.jpinyin.PinyinHelper;
 
 @Service("coke.pinyinMaintain")
 public class PinyinMaintain {
@@ -92,16 +98,13 @@ public class PinyinMaintain {
       for (Object object : list) {
         try {
           String value = BeanUtils.getProperty(object, property);
-          Collection<Pinyin> pinyins = PinyinUtility.toPinyin(value);
-          String quanValue;
-          String jianValue;
-          if (!pinyins.isEmpty()) {
-            Pinyin pinyin = pinyins.iterator().next();
-            quanValue = pinyin.getQuan();
-            jianValue = pinyin.getJian();
-          } else {
-            quanValue = jianValue = value;
+          if (StringUtils.isEmpty(value)) {
+            continue;
           }
+          String quanValue =
+              PinyinHelper.convertToPinyinString(value, "", PinyinFormat.WITHOUT_TONE);
+          String jianValue = PinyinHelper.getShortPinyin(value);
+
           BeanUtils.setProperty(object, quanProperty, quanValue);
           BeanUtils.setProperty(object, jianProperty, jianValue);
           session.update(object);
@@ -118,8 +121,8 @@ public class PinyinMaintain {
   }
 
   @Expose
-  public void prewPinyin(Map<String, Object> parameter) throws IllegalAccessException,
-      InvocationTargetException, NoSuchMethodException {
+  public Set<Entry<String, Integer>> prewPinyin(Map<String, Object> parameter)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     String clazzName = (String) parameter.get("clazz");
     String property = (String) parameter.get("property");
     String quanProperty = (String) parameter.get("quanpinProperty");
@@ -155,12 +158,29 @@ public class PinyinMaintain {
       session.clear();
     } while (!list.isEmpty());
 
+    wordMap = sortByValue(wordMap);
+    return wordMap.entrySet();
+  }
+
+  public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+    List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
+    Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+      public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+        return (o1.getValue()).compareTo(o2.getValue());
+      }
+    });
+
+    Map<K, V> result = new LinkedHashMap<K, V>();
+    for (Map.Entry<K, V> entry : list) {
+      result.put(entry.getKey(), entry.getValue());
+    }
+    return result;
   }
 
   public static void addSentence(Map<String, Integer> wordMap, String sentence) {
     if (sentence != null && sentence.length() > 1) {
       for (int i = 0; i <= sentence.length(); i++) {
-        for (int j = i + 1; j <= sentence.length(); j++) {
+        for (int j = i + 2; j <= sentence.length(); j++) {
           addWord(wordMap, sentence.substring(i, j));
         }
       }
