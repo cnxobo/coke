@@ -186,13 +186,17 @@ function $xa_resetQueryform(dataSetQuery, config) {
 }
 
 function $xa_getSelections(dataGrid, type) {
+	if (!type) {
+		type = "current";
+	}
+
 	var selection = dataGrid.get("selection");
 	var list;
 	if (selection && selection.length > 0) {
 		list = selection;
-	} else if (type=="all") {
+	} else if (type == "all") {
 		list = dataGrid.get("dataSet").getData(dataGrid.get("dataPath"));
-	} else if (type=="current") {
+	} else if (type == "current") {
 		var current = dataGrid.get("dataSet").getData().current;
 		list = [];
 		list.push(current);
