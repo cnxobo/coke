@@ -1,3 +1,26 @@
+$namespace("org.xobo.coke");
+org.xobo.coke.renderDataGridError = function(arg, errorColor){
+	var entity = arg.data;
+	var column = arg.column;
+	var property = column.get("property");
+	errorColor = errorColor || "#FFE1E2";
+	var messages = entity.getMessages(property);
+	if (messages){
+		var error = false;
+		messages.each(function(msg){
+			if (msg.state=="error"){
+				error = true;
+			}
+		});
+	}
+	qdom = $fly(arg.dom);
+	if (error){
+		qdom.css("background-color", errorColor);
+	} else {
+		qdom.css("background-color", "");
+	}
+	arg.processDefault = true;
+}
 function $xa_insertItem(dataSet, dataPath, dialog, data) {
 	if (!data) {
 		data = {
