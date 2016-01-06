@@ -16,47 +16,48 @@ import org.xobo.coke.querysupporter.service.SynonymService;
 
 @Service(SynonymService.BEAN_ID)
 public class SynonymServiceImpl implements SynonymService, ReflectionRegister {
-	private static final MapMap<Class<?>, String, Collection<String>> synonymPropertyMap = MapMap
-			.concurrentHashMap();
+  private static final MapMap<Class<?>, String, Collection<String>> synonymPropertyMap = MapMap
+      .concurrentHashMap();
 
-	@Override
-	public Collection<String> find(Class<?> clazz, String property) {
-		Collection<String> unionPropertyList = synonymPropertyMap.get(clazz, property);
-		if (unionPropertyList == null) {
-			return Collections.emptyList();
-		} else {
-			return unionPropertyList;
-		}
-	}
+  @Override
+  public Collection<String> find(Class<?> clazz, String property) {
+    Collection<String> unionPropertyList = synonymPropertyMap.get(clazz, property);
+    if (unionPropertyList == null) {
+      return Collections.emptyList();
+    } else {
+      return unionPropertyList;
+    }
+  }
 
-	@Override
-	public void register(Class<?> clazz, Field field) {
-		Synonym union = field.getAnnotation(Synonym.class);
-		Pinyin pinyin = field.getAnnotation(Pinyin.class);
-		Collection<String> properties = new HashSet<String>();
+  @Override
+  public void register(Class<?> clazz, Field field) {
+    Synonym union = field.getAnnotation(Synonym.class);
+    Pinyin pinyin = field.getAnnotation(Pinyin.class);
+    Collection<String> properties = new HashSet<String>();
 
-		String property = field.getName();
-		if (union != null) {
-			String value = union.value();
-			properties.addAll(Arrays.asList(value.split(",")));
-		}
+    String property = field.getName();
+    if (union != null) {
+      String value = union.value();
+      properties.addAll(Arrays.asList(value.split(",")));
+    }
 
-		if (pinyin != null) {
-			String quan = pinyin.quan();
-			String jian = pinyin.jian();
-			quan = StringUtils.isEmpty(quan) ? "Quan" : quan;
-			jian = StringUtils.isEmpty(jian) ? "Jian" : jian;
-			properties.add(property + jian);
-			properties.add(property + quan);
-		}
+    if (pinyin != null) {
+      String quan = pinyin.quan();
+      String jian = pinyin.jian();
+      quan = StringUtils.isEmpty(quan) ? "Quan" : quan;
+      jian = StringUtils.isEmpty(jian) ? "Jian" : jian;
+      properties.add(property);
+      properties.add(property + jian);
+      properties.add(property + quan);
+    }
 
-		if (!properties.isEmpty()) {
-			synonymPropertyMap.add(clazz, property, properties);
-		}
-	}
+    if (!properties.isEmpty()) {
+      synonymPropertyMap.add(clazz, property, properties);
+    }
+  }
 
-	public static MapMap<Class<?>, String, Collection<String>> getPinyinmap() {
-		return synonymPropertyMap;
-	}
+  public static MapMap<Class<?>, String, Collection<String>> getPinyinmap() {
+    return synonymPropertyMap;
+  }
 
 }
