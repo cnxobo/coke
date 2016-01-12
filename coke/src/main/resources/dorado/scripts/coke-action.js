@@ -1,25 +1,47 @@
 $namespace("org.xobo.coke");
-org.xobo.coke.renderDataGridError = function(arg, errorColor){
+org.xobo.coke.renderDataGridError = function(arg, errorColor) {
 	var entity = arg.data;
 	var column = arg.column;
 	var property = column.get("property");
 	errorColor = errorColor || "#FFE1E2";
 	var messages = entity.getMessages(property);
-	if (messages){
+	if (messages) {
 		var error = false;
-		messages.each(function(msg){
-			if (msg.state=="error"){
+		messages.each(function(msg) {
+			if (msg.state == "error") {
 				error = true;
 			}
 		});
 	}
 	qdom = $fly(arg.dom);
-	if (error){
+	if (error) {
 		qdom.css("background-color", errorColor);
 	} else {
 		qdom.css("background-color", "");
 	}
 	arg.processDefault = true;
+}
+
+org.xobo.coke.smartExecute = function(action, parameter, executeCallback,
+		cacheCallback) {
+	var strParameter = dorado.JSON.stringify(parameter);
+	if (action.strParameter != strParameter) {
+		action.strParameter = strParameter;
+		action.set("parameter", parameter);
+		if (jQuery.isFunction(executeCallback)) {
+			executeCallback();
+		} else {
+			if (action instanceof dorado.widget.DataSet){
+				action.flushAsync();
+			} else if (action instanceof dorad.widget.Action ){
+				action.execute();
+			}
+		}
+	} else {
+		if (jQuery.isFunction(cacheCallback)) {
+			cacheCallback();
+		}
+	}
 }
 function $xa_insertItem(dataSet, dataPath, dialog, data) {
 	if (!data) {
@@ -100,55 +122,54 @@ function $xa_deleteItems(dataGrid, updateAction, config) {
 		config = {};
 	}
 	if (jQuery.isFunction(config)) {
-		callBack = config;
+		config.callBack = config;
 	}
 
 	var selection = dataGrid.get("selection");
 	if (!selection || selection.length == 0) {
 		var list = dataGrid.get("dataSet").getData(dataGrid.get("dataPath"));
 		if (list && list.current) {
-			var name;
-			if (config.display) {
-				name = list.current.get(config.display);
-			}
-			if (name) {
-				var content = "确认要删除 " + name + " 。";
-			} else {
-				content = "确认要删除。";
-			}
-			dorado.MessageBox.confirm(content, {
-				icon : "WARNING",
-				title : "删除记录",
-				callback : function() {
-					list.current.remove();
-					updateAction && updateAction.execute(callBack);
+			selection = [ list.current ];
+		}
+	}
+
+	var names = [];
+	var error = "";
+	if (config.display) {
+		selection.each(function(item) {
+			if (jQuery.isFunction(config.beforeDel)) {
+				var result = config.beforeDel(item);
+				if (result) {
+					error += result;
 				}
-			});
-		} else {
-			dorado.widget.NotifyTipManager.notify("请选择要删除的记录。");
-		}
-	} else {
-		var names = [];
-		if (config.display) {
-			selection.each(function(item) {
-				names.push(item.get(config.display))
-			});
-		}
-		var content = "确认要删除选中的记录。";
-		if (names.length) {
-			content = "确认要删除选中的记录: \n\t" + names.join(",") + " 。";
-		}
-		dorado.MessageBox.confirm(content, {
-			icon : "WARNING",
-			title : "删除记录",
-			callback : function() {
-				selection.each(function(item) {
-					item.remove();
-				});
-				updateAction && updateAction.execute(callBack);
 			}
+			names.push(item.get(config.display))
 		});
 	}
+
+	if (error) {
+		if (jQuery.isFunction(config.error)){
+			config.error(names, error);
+		} else {
+			dorado.MessageBox.alert(error);
+		}
+		return;
+	}
+
+	var content = "确认要删除选中的记录。";
+	if (names.length) {
+		content = "确认要删除选中的记录: \n\t" + names.join(",") + " 。";
+	}
+	dorado.MessageBox.confirm(content, {
+		icon : "WARNING",
+		title : "删除记录",
+		callback : function() {
+			selection.each(function(item) {
+				item.remove();
+			});
+			updateAction && updateAction.execute(callBack);
+		}
+	});
 }
 
 function $xa_dialogSaveItem(dataSet, dataPath, updateAction, dialog, callback) {

@@ -58,6 +58,13 @@ public class HibernateSupportDao<K> extends HibernateDao {
     return (T) criteria.uniqueResult();
   }
 
+  public <T> T loadFirst(Map<String, Object> queryParameter, Class<T> entityClass) {
+    Page<T> page = new Page<T>(1, 0);
+    Collection<T> list = load(page, queryParameter, null, null, entityClass);
+    return list.isEmpty() ? null : list.iterator().next();
+  }
+
+
   public <T> Collection<T> load(Map<String, Object> queryParameter, Class<T> entityClass) {
     return load(null, queryParameter, null, null, entityClass);
   }
