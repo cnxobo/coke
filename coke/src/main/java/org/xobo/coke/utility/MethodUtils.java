@@ -32,6 +32,7 @@ public class MethodUtils {
   private static Map<Method, String[]> parameterNamesMap =
       new ConcurrentHashMap<Method, String[]>();
 
+
   /**
    * 反射调用指定方法
    * 
@@ -90,14 +91,13 @@ public class MethodUtils {
       if (value != null) {
         Type ptype = parametersType[i];
         if (ptype instanceof Class<?>) {
-          Class<?> type = (Class<?>) ptype;
-          if (!type.isAssignableFrom(value.getClass())) {
-            value = ConvertUtils.convert(value, type);
+          Class<?> clazz = (Class<?>) ptype;
+          if (!clazz.isAssignableFrom(value.getClass())) {
+            value = ConvertUtils.convert(value, clazz);
           }
-          if (!type.isPrimitive() && !type.isAssignableFrom(value.getClass())
-              && !type.getPackage().getName().startsWith("java") && value instanceof Map) {
-            Object instance = type.newInstance();
-            BeanUtils.populate(instance, (Map<String, ? extends Object>) value);
+          if (!clazz.isPrimitive() && !clazz.isAssignableFrom(value.getClass())
+              && !clazz.getPackage().getName().startsWith("java") && value instanceof Map) {
+            Object instance = ClassUtils.createInstance(clazz, (Map<String, Object>) value);
             value = instance;
           }
           if (Collection.class.isAssignableFrom(value.getClass())) {
@@ -186,7 +186,12 @@ public class MethodUtils {
       Type rawType = parameterizedType.getRawType();
       if (typeArguments.length > 0) {
         Type typeArgument = typeArguments[0];
-        Class<?> rt = (Class<?>) typeArgument;
+        Class<?> rt;
+        if (Class.class.isAssignableFrom(typeArgument.getClass())) {
+          rt = (Class<?>) typeArgument;
+        } else {
+          rt = Object.class;
+        }
         if (rawType instanceof Class<?>) {
           if (Collection.class.isAssignableFrom((Class<?>) rawType)) {
             if (typeArguments.length > 0) {
@@ -200,12 +205,17 @@ public class MethodUtils {
                 mapper.getTypeFactory().constructParametrizedType(LinkedHashMap.class, Map.class,
                     rt, Object.class);
             value = mapper.readValue(valueNode.toString(), javaType);
+          } else {
+            JavaType javaType =
+                mapper.getTypeFactory().constructParametrizedType(LinkedHashMap.class, Map.class,
+                    rt, Object.class);
+            Map<String, Object> result = mapper.readValue(valueNode.toString(), javaType);
+            value = ClassUtils.createInstance(rawType, result);
           }
-
         }
+
       }
     }
     return value;
   }
-
 }
