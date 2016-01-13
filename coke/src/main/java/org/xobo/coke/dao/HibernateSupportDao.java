@@ -64,6 +64,12 @@ public class HibernateSupportDao<K> extends HibernateDao {
     return list.isEmpty() ? null : list.iterator().next();
   }
 
+  public Long count(Map<String, Object> queryParameter, Class<?> entityClass) {
+    DetachedCriteria dc = buildDetachedCriteria(queryParameter, null, entityClass);
+    dc.setProjection(Projections.rowCount());
+    return (Long) dc.getExecutableCriteria(this.getSession()).uniqueResult();
+  }
+
 
   public <T> Collection<T> load(Map<String, Object> queryParameter, Class<T> entityClass) {
     return load(null, queryParameter, null, null, entityClass);
