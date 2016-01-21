@@ -1,11 +1,25 @@
 package org.xobo.coke.utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
+
 
 public class NumberParser {
+  public static List<Long> toLongs(String nums) {
+    if (StringUtils.isEmpty(nums)) {
+      return Collections.emptyList();
+    }
+    String[] numTokens = nums.split(",");
+    List<Long> numbers = new ArrayList<Long>(numTokens.length);
+    for (String token : numTokens) {
+      numbers.add(Long.valueOf(token));
+    }
+    return numbers;
+  }
+
   public static Long parseLong(Object obj) {
     if (obj == null) {
       return null;
@@ -61,7 +75,7 @@ public class NumberParser {
 
   public static List<Integer> parseIntegerList(String str, String regex) {
     List<Integer> list = new ArrayList<Integer>();
-    if (StringUtils.hasText(str)) {
+    if (StringUtils.isNotEmpty(str)) {
       String[] tokens = str.split(regex);
       for (String token : tokens) {
         Integer val = parseInteger(token);
