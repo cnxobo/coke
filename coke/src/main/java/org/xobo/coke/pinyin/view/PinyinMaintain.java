@@ -25,9 +25,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 import org.xobo.coke.dao.CokeHibernate;
 import org.xobo.coke.entity.PinyinConverter;
-import org.xobo.coke.model.Pinyin;
 import org.xobo.coke.querysupporter.service.impl.SynonymServiceImpl;
-import org.xobo.coke.utility.PinyinUtility;
 
 import com.bstek.dorado.annotation.DataProvider;
 import com.bstek.dorado.annotation.Expose;
