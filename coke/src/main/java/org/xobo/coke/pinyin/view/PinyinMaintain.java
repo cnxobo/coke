@@ -25,7 +25,9 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 import org.xobo.coke.dao.CokeHibernate;
 import org.xobo.coke.entity.PinyinConverter;
+import org.xobo.coke.model.Pinyin;
 import org.xobo.coke.querysupporter.service.impl.SynonymServiceImpl;
+import org.xobo.coke.utility.PinyinUtils;
 
 import com.bstek.dorado.annotation.DataProvider;
 import com.bstek.dorado.annotation.Expose;
@@ -34,6 +36,11 @@ import com.github.stuxuhai.jpinyin.PinyinHelper;
 
 @Service("coke.pinyinMaintain")
 public class PinyinMaintain {
+  
+  @DataProvider
+  public Collection<Pinyin> loadAllPinyin(String hanzi){
+   return PinyinUtils.toPinyin(hanzi); 
+  }
 
   @DataProvider
   public Collection<PinyinConverter> loadPinyinConverters() {

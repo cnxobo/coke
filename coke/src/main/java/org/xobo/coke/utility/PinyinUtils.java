@@ -13,12 +13,13 @@ import org.xobo.coke.model.Pinyin;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 
-public class PinyinUtility {
+public class PinyinUtils {
 
   public static Collection<Pinyin> toPinyin(String hanzi) {
     if (!StringUtils.hasText(hanzi)) {
       return Collections.emptyList();
     }
+    
 
     Collection<Collection<String>> pinYinTokenList = new ArrayList<Collection<String>>();
     for (int i = 0; i < hanzi.length(); i++) {
