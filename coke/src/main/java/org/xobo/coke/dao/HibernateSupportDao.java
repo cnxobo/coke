@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -319,6 +320,19 @@ public class HibernateSupportDao<K> extends HibernateDao {
       ((IDetail<K>) entity).setParentId(parentId);
     }
     setPathValue(session, entity, parent);
+  }
+  
+  public void insertEntities(Collection<? extends IBase<K>> entites){
+    if (CollectionUtils.isEmpty(entites)){
+      return;
+    }
+    
+    IUser user = ContextHolder.getLoginUser();
+    Session session = this.getSession();
+    
+    for (IBase<K> iBase : entites) {
+     insertEntity(session, iBase, user); 
+    }
   }
 
   public void insertEntity(IBase<K> baseEntity) {

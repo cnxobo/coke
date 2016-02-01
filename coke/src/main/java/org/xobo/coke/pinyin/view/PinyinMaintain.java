@@ -98,7 +98,7 @@ public class PinyinMaintain {
       criteria.setFirstResult(0);
       criteria.setMaxResults(batchSize);
       list = criteria.list();
-
+      
       Transaction transaction = session.beginTransaction();
       for (Object object : list) {
         try {
