@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xobo.coke.dataType.MapMap;
 import org.xobo.coke.model.UnkonwDataType;
+import org.xobo.coke.querysupporter.model.EnumDataType;
 import org.xobo.coke.querysupporter.model.PropertyWrapper;
 import org.xobo.coke.querysupporter.service.QueryPropertyWrapperService;
 import org.xobo.coke.querysupporter.service.ReflectionRegister;
@@ -29,6 +30,7 @@ public class QueryPreLoadPropertyWrapperServiceImpl implements QueryPropertyWrap
   @Autowired
   private DataTypeManager dataTypeManager;
 
+  @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
   public PropertyWrapper find(Class<?> clazz, String property,
       Map<String, PropertyWrapper> propertyWrapperMap) {
@@ -47,7 +49,13 @@ public class QueryPreLoadPropertyWrapperServiceImpl implements QueryPropertyWrap
     if (propertyWrapper != null) {
       DataType dataType = propertyWrapper.getDataType();
       if (dataType == null) {
-        dataType = extractPropertyType(propertyWrapper.getType(), propertyWrapper.getProperty());
+        Class<?> propertyTypeclazz = propertyWrapper.getType();
+        if (Enum.class.isAssignableFrom(propertyTypeclazz)) {
+          dataType = new EnumDataType((Class<? extends Enum>) propertyTypeclazz);
+        } else {
+          dataType = extractPropertyType(propertyWrapper.getType(), propertyWrapper.getProperty());
+        }
+
         if (dataType == null) {
           dataType = new UnkonwDataType();
         }
