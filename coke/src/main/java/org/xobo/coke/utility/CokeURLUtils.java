@@ -1,6 +1,7 @@
 package org.xobo.coke.utility;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,9 +14,24 @@ public class CokeURLUtils {
     try {
       encodedValue = UriUtils.encodePath(value, "UTF-8");
     } catch (UnsupportedEncodingException e1) {
-      encodedValue = value;
+      throw new RuntimeException(e1);
     }
     return encodedValue;
+  }
+
+  public static String decode(String value) {
+    return decode(value, "UTF-8");
+  }
+
+  public static String decode(String value, String charset) {
+    String encodedValue;
+    try {
+      encodedValue = URLDecoder.decode(value, charset);
+    } catch (UnsupportedEncodingException e1) {
+      throw new RuntimeException(e1);
+    }
+    return encodedValue;
+
   }
 
   public static String getContentDisposition(String fileName) {
