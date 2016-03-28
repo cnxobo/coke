@@ -38,12 +38,16 @@ public class QueryPreLoadPropertyWrapperServiceImpl implements QueryPropertyWrap
     PropertyWrapper propertyWrapper = null;
     if (propertyWrapperMap != null) {
       propertyWrapper = propertyWrapperMap.get(property);
-      propertyWrapper.setAutoCreate(false);
+      if (propertyWrapper != null) {
+        propertyWrapper.setAutoCreate(false);
+      }
     }
 
     if (propertyWrapper == null) {
       propertyWrapper = golbalPropertyWrapperMap.get(clazz, property);
-      propertyWrapper.setAutoCreate(true);
+      if (propertyWrapper != null) {
+        propertyWrapper.setAutoCreate(true);
+      }
     }
 
     if (propertyWrapper != null) {
