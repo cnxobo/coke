@@ -26,5 +26,12 @@
 		<Package name="CopyData" pattern="dorado-js" depends="webMessage">
 			scripts/copy-data
 		</Package>
+		<Package name="DataTransfer" pattern="dorado-js" depends="LzString">
+			scripts/data-transfer
+		</Package>
+		<Package name="LzString" pattern="dorado-js">
+			scripts/string/base64-string,
+			scripts/string/lz-string
+		</Package>
 	</Packages>
 </config>
