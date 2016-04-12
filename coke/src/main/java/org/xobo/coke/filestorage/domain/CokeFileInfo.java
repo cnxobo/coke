@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity(name = "CK_FILE_INFO")
@@ -17,6 +18,7 @@ public class CokeFileInfo {
   private String createBy;
 
   @Id
+  @GeneratedValue
   @Column(name = "ID")
   public Long getId() {
     return id;
@@ -56,8 +58,8 @@ public class CokeFileInfo {
     return relativePath;
   }
 
-  public void setRelativePath(String filePath) {
-    this.relativePath = filePath;
+  public void setRelativePath(String relativePath) {
+    this.relativePath = relativePath;
   }
 
   public Date getCreateTime() {

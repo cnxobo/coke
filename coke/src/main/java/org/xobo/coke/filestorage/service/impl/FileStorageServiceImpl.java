@@ -12,6 +12,8 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ import org.xobo.coke.filestorage.domain.CokeFileInfo;
 import org.xobo.coke.filestorage.service.FileStorageProvider;
 import org.xobo.coke.filestorage.service.FileStorageService;
 
-@Service
+@Service(FileStorageService.BEAN_ID)
 public class FileStorageServiceImpl implements FileStorageService {
   private Map<String, FileStorageProvider> fileStorageProviderMap =
       new HashMap<String, FileStorageProvider>();
@@ -51,6 +53,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     fileInfo.setCreateTime(new Date());
     fileInfo.setFileNo(UUID.randomUUID().toString());
     fileInfo.setFileStorageType(fileStorageType);
+    fileInfo.setRelativePath(relativePath);
     cokeHibernate.getSession().save(fileInfo);
     return fileInfo;
   }
@@ -63,9 +66,13 @@ public class FileStorageServiceImpl implements FileStorageService {
 
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public CokeFileInfo get(String fileNo) {
-    return (CokeFileInfo) cokeHibernate.getSession().get(CokeFileInfo.class, fileNo);
+    DetachedCriteria dc = DetachedCriteria.forClass(CokeFileInfo.class);
+    dc.add(Restrictions.eq("fileNo", fileNo));
+    Collection<CokeFileInfo> cokeFileInfos = (Collection<CokeFileInfo>) cokeHibernate.query(dc);
+    return cokeFileInfos.isEmpty() ? null : cokeFileInfos.iterator().next();
   }
 
   FileStorageProvider getFileStorageProvider(String fileStorageType) {
