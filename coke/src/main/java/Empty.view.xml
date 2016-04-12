@@ -6,6 +6,7 @@
     <DataType name="Template"/>
   </Model>
   <View>
+    <Property name="packages">CokeAction,font-awesome</Property>
     <Panel>
       <Buttons/>
       <Children>
@@ -59,5 +60,11 @@
       </Children>
       <Tools/>
     </Panel>
+    <UpdateAction id="updateActionTemplate">
+      <Property name="dataResolver">#saveTemplates</Property>
+      <UpdateItem>
+        <Property name="dataSet">dataSetTemplate</Property>
+      </UpdateItem>
+    </UpdateAction>
   </View>
 </ViewConfig>

@@ -15,6 +15,15 @@
 		</property>
 	</bean>
 	<context:component-scan base-package="org.xobo.coke" />
+
+	<bean class="com.bstek.bdf2.core.orm.AnnotationPackages">
+		<property name="scanPackages">
+			<list>
+				<value>org/xobo/coke/*/domain</value>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="coke.standardPasswordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"></bean>
 
 	<bean class="org.xobo.coke.model.SkinInfo">

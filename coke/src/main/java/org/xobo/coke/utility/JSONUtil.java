@@ -4,7 +4,9 @@ import java.io.StringWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONUtil {
@@ -20,6 +22,10 @@ public class JSONUtil {
     return writer.toString();
   }
 
+  public static Object toObject(String json) {
+    return toObject(json, Object.class);
+  }
+
   public static <T> T toObject(String json, Class<T> clazz) {
     ObjectMapper mapper = new ObjectMapper();
     try {
@@ -29,8 +35,29 @@ public class JSONUtil {
     }
   }
 
+  public static Object toObject(TreeNode treeNode) {
+    return toObject(treeNode, Object.class);
+  }
+
+  public static <T> T toObject(TreeNode treeNode, Class<T> clazz) {
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      return mapper.treeToValue(treeNode, clazz);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static JsonNode toJsonNode(Object obj) {
+    ObjectMapper mapper = getMapper();
+    return mapper.valueToTree(obj);
+  }
+
 
   public static Map<String, Object> toMap(String json) {
+    if (json == null) {
+      return null;
+    }
     ObjectMapper mapper = new ObjectMapper();
     try {
       JavaType javaType =
@@ -42,6 +69,11 @@ public class JSONUtil {
     }
   }
 
+  public static ObjectMapper getMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    return mapper;
+  }
+
   public static String prettyJSON(Object object) {
     String json = null;
     ObjectMapper mapper = new ObjectMapper();
@@ -51,6 +83,12 @@ public class JSONUtil {
       throw new RuntimeException(e);
     }
     return json;
+  }
+
+  public static void main(String[] args) {
+    String json = "[{\"name\":\"aaa\"},{\"name\":\"bbb\"}]";
+    Object object = toObject(json, null);
+    System.out.println(object);
   }
 
 }

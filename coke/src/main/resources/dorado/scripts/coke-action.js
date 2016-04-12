@@ -22,8 +22,7 @@ org.xobo.coke.renderDataGridError = function(arg, errorColor) {
 	arg.processDefault = true;
 }
 
-org.xobo.coke.smartExecute = function(action, parameter, executeCallback,
-		cacheCallback) {
+org.xobo.coke.smartExecute = function(action, parameter, executeCallback, cacheCallback) {
 	var strParameter = dorado.JSON.stringify(parameter);
 	if (action.strParameter != strParameter) {
 		action.strParameter = strParameter;
@@ -31,9 +30,9 @@ org.xobo.coke.smartExecute = function(action, parameter, executeCallback,
 		if (jQuery.isFunction(executeCallback)) {
 			executeCallback();
 		} else {
-			if (action instanceof dorado.widget.DataSet){
+			if (action instanceof dorado.widget.DataSet) {
 				action.flushAsync();
-			} else if (action instanceof dorad.widget.Action ){
+			} else if (action instanceof dorad.widget.Action) {
 				action.execute();
 			}
 		}
@@ -52,10 +51,11 @@ function $xa_insertItem(dataSet, dataPath, dialog, data) {
 	}
 	var list = dataSet.getData(dataPath);
 	if (list) {
-		list.insert(data);
+		data = list.insert(data);
 		if (dialog) {
 			dialog.show();
 		}
+		return data;
 	} else {
 		dorado.MessageBox.alert('不能添加数据。');
 	}
@@ -148,7 +148,7 @@ function $xa_deleteItems(dataGrid, updateAction, config) {
 	}
 
 	if (error) {
-		if (jQuery.isFunction(config.error)){
+		if (jQuery.isFunction(config.error)) {
 			config.error(names, error);
 		} else {
 			dorado.MessageBox.alert(error);
