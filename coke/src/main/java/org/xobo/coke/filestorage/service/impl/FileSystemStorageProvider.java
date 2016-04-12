@@ -1,0 +1,69 @@
+package org.xobo.coke.filestorage.service.impl;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.UUID;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.xobo.coke.filestorage.service.FileStorageProvider;
+
+@Service
+public class FileSystemStorageProvider implements FileStorageProvider {
+  public static final String ProviderType = "FileSystem";
+
+  @Value("${coke.fileSystemStorageLocation}")
+  private String fileSystemStorageLocation;
+
+  @Override
+  public String put(InputStream inputStream) throws IOException {
+    String relativePath = getRelativPath();
+    File targetFile = getTargetFile(fileSystemStorageLocation, relativePath);
+    IOUtils.copy(inputStream, new FileOutputStream(targetFile));
+    return relativePath;
+  }
+
+  @Override
+  public String put(MultipartFile file)
+      throws IllegalStateException, IOException {
+
+    String relativePath = getRelativPath();
+    File targetFile = getTargetFile(fileSystemStorageLocation, relativePath);
+    file.transferTo(targetFile);
+
+    return relativePath;
+  }
+
+  @Override
+  public InputStream getInputStream(String relativePath) throws FileNotFoundException {
+    File targetFile = getTargetFile(fileSystemStorageLocation, relativePath);
+    return new FileInputStream(targetFile);
+  }
+
+  public static String getRelativPath() {
+    String[] paths = UUID.randomUUID().toString().split("-");
+    return StringUtils.join(paths, File.separatorChar);
+  }
+
+  public static File getTargetFile(String location, String relativePath) {
+    String absolutePath = location + relativePath;
+    File targetFile = new File(absolutePath);
+    File parent = targetFile.getParentFile();
+    if (!parent.exists()) {
+      parent.mkdirs();
+    }
+    return targetFile;
+  }
+
+  @Override
+  public String getType() {
+    return ProviderType;
+  }
+}
