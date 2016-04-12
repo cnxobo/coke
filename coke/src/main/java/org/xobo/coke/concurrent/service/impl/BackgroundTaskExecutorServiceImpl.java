@@ -135,13 +135,17 @@ public class BackgroundTaskExecutorServiceImpl implements BackgroundTaskExecutor
 
   @PostConstruct
   public void init() {
-    Long threadPool = Configure.getLong("coke.threadPool", 50);
+    Long threadPoolSize = Configure.getLong("coke.threadPoolSize", 50);
     String nodeName = Configure.getString("coke.nodeName");
     executorService =
-        MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(threadPool.intValue()));
+        MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(threadPoolSize.intValue()));
 
+    logger.info("start thread pool ({})", threadPoolSize);
 
     Collection<BackgroundTaskLog> tasks = backgroundTaskService.getBackgroundTaskLogs(nodeName);
+
+    logger.info("resume {} tasks", tasks.size());
+
     for (BackgroundTaskLog backgroundTaskLog : tasks) {
       execute(backgroundTaskLog.getType(), backgroundTaskLog.getDesc(),
           backgroundTaskLog.getBackgroundTaskBeanId(),
