@@ -81,17 +81,18 @@ public class BackgroundTaskExecutorServiceImpl implements BackgroundTaskExecutor
    * java.lang.String, java.lang.String, java.util.Map)
    */
   @Override
-  public void execute(String type, String desc, String backgroundTaskId,
+  public void execute(String type, String desc, String backgroundTaskBeanId,
       Map<String, Object> parameter) {
 
     String taskId =
-        backgroundTaskService.addBackgroundTask(type, desc, backgroundTaskId, parameter, nodeName);
-    execute(type, desc, backgroundTaskId, parameter, taskId);
+        backgroundTaskService.addBackgroundTask(type, desc, backgroundTaskBeanId, parameter,
+            nodeName);
+    execute(type, desc, backgroundTaskBeanId, parameter, taskId);
   }
 
-  public void execute(String type, String desc, String backgroundTaskId,
+  public void execute(String type, String desc, String backgroundTaskBeanId,
       Map<String, Object> parameter, final String taskId) {
-    Object instance = applicationContext.getBean(backgroundTaskId);
+    Object instance = applicationContext.getBean(backgroundTaskBeanId);
 
     BackgroundTask backgroundTask = null;
     if (instance instanceof BackgroundTask) {
@@ -126,7 +127,8 @@ public class BackgroundTaskExecutorServiceImpl implements BackgroundTaskExecutor
   public void runAgain(String taskId) {
     BackgroundTaskLog backgroundTaskLog = backgroundTaskService.findBackgroundTaskLog(taskId);
     execute(backgroundTaskLog.getType(), backgroundTaskLog.getDesc(),
-        backgroundTaskLog.getBackgroundTaskId(), JSONUtil.toMap(backgroundTaskLog.getParameter()));
+        backgroundTaskLog.getBackgroundTaskBeanId(),
+        JSONUtil.toMap(backgroundTaskLog.getParameter()));
   }
 
   private String nodeName;
@@ -142,7 +144,8 @@ public class BackgroundTaskExecutorServiceImpl implements BackgroundTaskExecutor
     Collection<BackgroundTaskLog> tasks = backgroundTaskService.getBackgroundTaskLogs(nodeName);
     for (BackgroundTaskLog backgroundTaskLog : tasks) {
       execute(backgroundTaskLog.getType(), backgroundTaskLog.getDesc(),
-          backgroundTaskLog.getBackgroundTaskId(), JSONUtil.toMap(backgroundTaskLog.getParameter()),
+          backgroundTaskLog.getBackgroundTaskBeanId(),
+          JSONUtil.toMap(backgroundTaskLog.getParameter()),
           backgroundTaskLog.getTaskId());
     }
   }

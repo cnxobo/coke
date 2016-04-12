@@ -28,9 +28,9 @@ public class BackgroundTaskMaintain {
   }
 
   @Expose
-  public void addBackgroundTask(String type, String desc, String backgroundTaskId,
+  public void addBackgroundTask(String type, String desc, String backgroundTaskBeanId,
       Map<String, Object> parameter) {
-    backgroundTaskExecutorService.execute(type, desc, backgroundTaskId, parameter);
+    backgroundTaskExecutorService.execute(type, desc, backgroundTaskBeanId, parameter);
   }
 
   @Expose

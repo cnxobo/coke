@@ -7,7 +7,7 @@ public interface BackgroundTaskExecutorService {
 
   void cancel(String taskId);
 
-  void execute(String type, String desc, String backgroundTaskId,
+  void execute(String type, String desc, String backgroundTaskBeanId,
       Map<String, Object> parameter);
 
   void runAgain(String taskId);

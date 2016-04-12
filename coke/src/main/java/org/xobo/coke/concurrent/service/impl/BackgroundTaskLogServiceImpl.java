@@ -34,14 +34,14 @@ public class BackgroundTaskLogServiceImpl implements BackgroundTaskLogService {
   }
 
   @Override
-  public String addBackgroundTask(String type, String desc, String backgroundTaskId,
+  public String addBackgroundTask(String type, String desc, String backgroundTaskBeanId,
       Map<String, Object> parameter, String nodeName) {
     BackgroundTaskLog backgroundTaskLog = new BackgroundTaskLog();
     String taskId = UUID.randomUUID().toString();
     backgroundTaskLog.setTaskId(taskId);
     backgroundTaskLog.setType(type);
     backgroundTaskLog.setDesc(desc);
-    backgroundTaskLog.setBackgroundTaskId(backgroundTaskId);
+    backgroundTaskLog.setBackgroundTaskBeanId(backgroundTaskBeanId);
     String json = JSONUtil.toJSON(parameter);
     backgroundTaskLog.setParameter(json);
     backgroundTaskLog.setStatus("P");

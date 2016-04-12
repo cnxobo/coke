@@ -14,7 +14,7 @@ public interface BackgroundTaskLogService {
 
   void markStatus(String taskId, String status);
 
-  String addBackgroundTask(String type, String desc, String backgroundTaskId,
+  String addBackgroundTask(String type, String desc, String backgroundTaskBeanId,
       Map<String, Object> parameter, String nodeName);
 
   BackgroundTaskLog findBackgroundTaskLog(String taskId);

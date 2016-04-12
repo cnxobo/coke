@@ -19,7 +19,7 @@ public class BackgroundTaskLog {
   @PropertyDef(label = "描述")
   private String desc;
   @PropertyDef(label = "任务 BeanID")
-  private String backgroundTaskId;
+  private String backgroundTaskBeanId;
   @PropertyDef(label = "状态")
   private String status;// P processing, S sucess, F fail,C canceled
   @PropertyDef(label = "参数")
@@ -71,15 +71,6 @@ public class BackgroundTaskLog {
 
   public void setDesc(String desc) {
     this.desc = desc;
-  }
-
-  @Column(name = "BACKGROUND_TASKID")
-  public String getBackgroundTaskId() {
-    return backgroundTaskId;
-  }
-
-  public void setBackgroundTaskId(String backgroundTaskId) {
-    this.backgroundTaskId = backgroundTaskId;
   }
 
   @Column(name = "STATUS")
@@ -143,6 +134,15 @@ public class BackgroundTaskLog {
 
   public void setParameter(String parameter) {
     this.parameter = parameter;
+  }
+
+  @Column(name = "BACKGROUND_TASK_BEANID")
+  public String getBackgroundTaskBeanId() {
+    return backgroundTaskBeanId;
+  }
+
+  public void setBackgroundTaskBeanId(String backgroundTaskBeanId) {
+    this.backgroundTaskBeanId = backgroundTaskBeanId;
   }
 
 
