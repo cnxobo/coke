@@ -47,21 +47,33 @@ public class FileController {
     Map<String, Object> result =
         new LinkedHashMap<String, Object>();
 
+    System.out.println(request.getParameter("name"));
 
     Collection<Map<String, Object>> otherFiles = new ArrayList<Map<String, Object>>();
     if (isMultipart) {
       FileItemFactory factory = new DiskFileItemFactory();
       ServletFileUpload upload = new ServletFileUpload(factory);
 
+
+      String fileStorageType = null;
       try {
         List<FileItem> items = upload.parseRequest(request);
         Iterator<FileItem> iterator = items.iterator();
         while (iterator.hasNext()) {
           FileItem item = (FileItem) iterator.next();
+          if (item.isFormField() && "FileStorageType".equals(item.getFieldName())) {
+            fileStorageType = item.getString();
+          }
+        }
+
+        iterator = items.iterator();
+        while (iterator.hasNext()) {
+          FileItem item = (FileItem) iterator.next();
 
           if (!item.isFormField()) {
             String fileName = item.getName();
-            CokeFileInfo cokeFileInfo = fileService.put(item.getInputStream(), fileName);
+            CokeFileInfo cokeFileInfo =
+                fileService.put(fileStorageType, item.getInputStream(), fileName);
 
             if ("file".equals(item.getFieldName())) {
               putFileInfo(cokeFileInfo, result);
@@ -73,8 +85,6 @@ public class FileController {
           }
         }
       } catch (FileUploadException e) {
-        e.printStackTrace();
-      } catch (Exception e) {
         e.printStackTrace();
       }
     }

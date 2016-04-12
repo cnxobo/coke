@@ -2,13 +2,18 @@ package org.xobo.coke.filestorage.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xobo.coke.filestorage.domain.CokeBlob;
@@ -20,6 +25,11 @@ public class DatabaseStorageProvider implements FileStorageProvider {
 
   public static final String ProviderType = "Database";
 
+  @Value("${coke.enableDatabaseLocalCache:true}")
+  private boolean enableLocalFileCache;
+
+  @Value("${coke.databaseStorageLocalCacheLocation:}")
+  private String databaseCachedfileSystemStorageLocation;
 
   @Override
   public String getType() {
@@ -42,16 +52,58 @@ public class DatabaseStorageProvider implements FileStorageProvider {
 
   @Override
   public InputStream getInputStream(String relativePath) throws FileNotFoundException {
+    String path = null;
+    File file = null;
+    if (enableLocalFileCache) {
+      path = DigestUtils.md5Hex(relativePath);
+      path = rebuildString(path, File.separator, 8, 4, 4, 4);
+      file = new File(databaseCachedfileSystemStorageLocation + path);
+      if (file.exists()) {
+        return new FileInputStream(file);
+      }
+    }
+
     InputStream inputStream = null;
     CokeBlob cokeBlob = cokeBlobService.get(Long.valueOf(relativePath));
     if (cokeBlob != null) {
       byte[] data = cokeBlob.getData();
+      inputStream = new ByteArrayInputStream(data);
+      if (enableLocalFileCache) {
+        InputStream is = new ByteArrayInputStream(data);
+        File parent = file.getParentFile();
+        if (!parent.exists()) {
+          parent.mkdirs();
+        }
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        try {
+          IOUtils.copy(inputStream, fileOutputStream);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        } finally {
+          IOUtils.closeQuietly(is);
+          IOUtils.closeQuietly(fileOutputStream);
+        }
+      }
       inputStream = new ByteArrayInputStream(data);
     } else {
       throw new FileNotFoundException("CokeBlob Reocrd not found " + relativePath);
     }
     return inputStream;
   }
+
+  static String rebuildString(String target, String separator, int... lengths) {
+    int length = target.length();
+    int builderLength = length + lengths.length * separator.length();
+    StringBuilder builder = new StringBuilder(builderLength);
+    int start = 0;
+    for (int i : lengths) {
+      builder.append(target.substring(start, start + i)).append(separator);
+      start += i;
+    }
+    builder.append(target.substring(start));
+    return builder.toString();
+  }
+
 
   @Resource
   private CokeBlobService cokeBlobService;
