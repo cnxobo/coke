@@ -22,6 +22,6 @@ public class CokeContextLocationConfigurer implements PackageConfigurer {
 
   @Override
   public String[] getServletContextConfigLocations(ResourceLoader resourceLoader) throws Exception {
-    return new String[] {"classpath:coke/servlet-context.xml"};
+    return null;
   }
 }

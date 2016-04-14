@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.xobo.coke.concurrent.domain.BackgroundTaskLog;
 import org.xobo.coke.concurrent.service.BackgroundTask;
@@ -27,7 +28,8 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
 @Service
-public class BackgroundTaskExecutorServiceImpl implements BackgroundTaskExecutorService {
+public class BackgroundTaskExecutorServiceImpl
+    implements BackgroundTaskExecutorService, ApplicationContextAware {
   private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   class TaskInfo {
@@ -46,7 +48,6 @@ public class BackgroundTaskExecutorServiceImpl implements BackgroundTaskExecutor
   private Map<String, TaskInfo> backgroundTaskMap =
       new ConcurrentHashMap<String, TaskInfo>();
 
-  @Autowired
   private ApplicationContext applicationContext;
 
   @Autowired
@@ -152,5 +153,9 @@ public class BackgroundTaskExecutorServiceImpl implements BackgroundTaskExecutor
           JSONUtil.toMap(backgroundTaskLog.getParameter()),
           backgroundTaskLog.getTaskId());
     }
+  }
+
+  public void setApplicationContext(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
   }
 }
