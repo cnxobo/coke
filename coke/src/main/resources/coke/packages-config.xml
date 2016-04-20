@@ -33,5 +33,12 @@
 			scripts/string/base64-string,
 			scripts/string/lz-string
 		</Package>
+		<Package name="pnotify-css" pattern="dorado-css">
+			scripts/pnotify/pnotify.custom
+		</Package>
+		<Package name="pnotify" pattern="dorado-js" depends="pnotify-css">
+			scripts/pnotify/pnotify.custom,
+			scripts/pnotify/coke-pnotify
+		</Package>
 	</Packages>
 </config>

@@ -33,7 +33,7 @@
 					content : "已读",
 					onclick : function() {
 						var ajaxAction = $id("viewMain").objects[0].id("ajaxActionBulkUpdate");
-						if (ajaxAction) {
+						if (ajaxAction && ids) {
 							ajaxAction.set("parameter", {
 								ids : ids,
 								property : "unread",
@@ -108,7 +108,7 @@
 			}
 		}
 	}
-	win.coke = win.coke = {};
+	win.coke = win.coke || {};
 	win.coke.webmessage = {
 		sendDesktopNotification : sendDesktopNotification,
 		sendNotify : sendNotify,
