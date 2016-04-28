@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.xobo.coke.api.model.Result;
 import org.xobo.coke.concurrent.domain.BackgroundTaskLog;
 import org.xobo.coke.concurrent.repository.BackgroundTaskRepository;
 import org.xobo.coke.concurrent.service.BackgroundTaskLogService;
@@ -19,18 +20,16 @@ public class BackgroundTaskLogServiceImpl implements BackgroundTaskLogService {
 
   @Override
   public void markSuccess(String taskId, Map<String, Object> result) {
-    String jsonResult = null;
-    if (result != null) {
-      jsonResult = JSONUtil.toJSON(result);
-    }
-    backgroundTaskRepository.updateResult(taskId, "S", jsonResult);
-
+    Result resultInfo = Result.success();
+    resultInfo.setData(result);
+    backgroundTaskRepository.updateResult(taskId, "S", JSONUtil.toJSON(resultInfo));
   }
 
   @Override
   public void markFailure(String taskId, Throwable t) {
     String messsage = ExceptionUtils.getRootCauseMessage(t);
-    backgroundTaskRepository.updateResult(taskId, "F", messsage);
+    Result resultInfo = Result.fail("1000", messsage);
+    backgroundTaskRepository.updateResult(taskId, "F", JSONUtil.toJSON(resultInfo));
   }
 
   @Override

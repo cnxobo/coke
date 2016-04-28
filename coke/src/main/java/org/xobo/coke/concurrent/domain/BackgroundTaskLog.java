@@ -38,6 +38,7 @@ public class BackgroundTaskLog {
 
   @Id
   @GeneratedValue
+  @Column(name = "ID")
   public Long getId() {
     return id;
   }

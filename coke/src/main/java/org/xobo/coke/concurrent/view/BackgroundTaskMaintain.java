@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.xobo.coke.concurrent.domain.BackgroundTaskLog;
@@ -24,6 +25,7 @@ public class BackgroundTaskMaintain {
       Map<String, Object> parameter) {
     DetachedCriteria dc =
         cokeHibernate.buildDetachedCriteria(parameter, criteria, BackgroundTaskLog.class);
+    dc.addOrder(Order.desc("id"));
     cokeHibernate.pagingQuery(page, dc);
   }
 
