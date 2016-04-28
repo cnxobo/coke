@@ -47,13 +47,10 @@ public class FileController {
     Map<String, Object> result =
         new LinkedHashMap<String, Object>();
 
-    System.out.println(request.getParameter("name"));
-
     Collection<Map<String, Object>> otherFiles = new ArrayList<Map<String, Object>>();
     if (isMultipart) {
       FileItemFactory factory = new DiskFileItemFactory();
       ServletFileUpload upload = new ServletFileUpload(factory);
-
 
       String fileStorageType = null;
       try {

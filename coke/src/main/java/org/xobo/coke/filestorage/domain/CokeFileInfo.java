@@ -46,6 +46,7 @@ public class CokeFileInfo {
     this.filename = filename;
   }
 
+  @Column(name = "FILE_STORAGE_TYPE")
   public String getFileStorageType() {
     return fileStorageType;
   }
@@ -54,6 +55,7 @@ public class CokeFileInfo {
     this.fileStorageType = fileStorageType;
   }
 
+  @Column(name = "RELATIVE_PATH")
   public String getRelativePath() {
     return relativePath;
   }
@@ -62,6 +64,7 @@ public class CokeFileInfo {
     this.relativePath = relativePath;
   }
 
+  @Column(name = "CREATE_TIME")
   public Date getCreateTime() {
     return createTime;
   }
@@ -70,6 +73,7 @@ public class CokeFileInfo {
     this.createTime = createTime;
   }
 
+  @Column(name = "CREATE_BY")
   public String getCreateBy() {
     return createBy;
   }
