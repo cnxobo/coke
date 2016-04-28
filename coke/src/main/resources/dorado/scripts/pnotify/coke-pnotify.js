@@ -51,12 +51,13 @@
         "firstpos2": 25
     };
     
-    function notify(title, content){
+    function notify(title, content,type){
         var opts = {
             title: title,
             text: content,
             addclass: "stack-bottomright",
             cornerclass: "",
+			type: type,
             stack: stack_bottomright
         };
         new PNotify(opts);

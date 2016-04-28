@@ -1,35 +1,74 @@
 (function(win) {
 	var viewMap = {};
-	var __view;
-	var __dataGrid;
-	var __dataRebuild;
-	var __ignoreProperties;
-	var __importCallback;
 
-	function exportData() {
-		var dataSet = __dataGrid.get("dataSet");
-		var dataPath = __dataGrid.get("dataPath");
-		var selections = __dataGrid.get("selection");
+	function exportBase64() {
+		var result = this.exportObject();
+		var jsonData = dorado.JSON.stringify(result);
+		return LZString.compressToBase64(jsonData);
+	}
+	
+	function importBase64(data) {
+		var dataSet = this.dataControl.get("dataSet");
+		var dataPath = this.dataControl.get("dataPath");
+
+		var object = dorado.JSON.parse(LZString.decompressFromBase64(data));
+		this.importObject(object);
+	}
+	
+
+	function exportObject() {
+		var dataSet = this.dataControl.get("dataSet");
+		var dataPath = this.dataControl.get("dataPath");
+
+		var selections = [];
+		if (this.dataControl instanceof dorado.widget.AbstractList) {
+			selections = this.dataControl.get("selection");
+		}
 		var result = [];
+		var self = this;
 		if (selections.length) {
 			selections.each(function(entity) {
+				self.references.each(function(p){
+					entity.get(p);
+				});
 				result.push(entity.toJSON());
 			})
 		} else {
 			var list = dataSet.getData(dataPath);
 			var currentEntity = list.current;
 			if (currentEntity) {
-				console.log(currentEntity);
+				self.references.each(function(p){
+					currentEntity.get(p);
+				});
 				result.push(currentEntity.toJSON());
 			}
 		}
-		if (__ignoreProperties && jQuery.isFunction(__ignoreProperties.each)) {
-			__ignoreProperties.each(function(property) {
-				setData(result, property, null);
+
+		var self = this;
+		if (this.ignoreProperties && jQuery.isFunction(this.ignoreProperties.each)) {
+			this.ignoreProperties.each(function(property) {
+				self.setData(result, property, null);
 			});
 		}
-		var jsonData = dorado.JSON.stringify(result);
-		return LZString.compressToBase64(jsonData);
+		return result;
+	}
+	
+	function importObject(object) {
+		var dataSet = this.dataControl.get("dataSet");
+		var dataPath = this.dataControl.get("dataPath");
+
+		if (jQuery.isFunction(object.each)) {
+			var self = this;
+			object.each(function(item) {
+				var entity = dataSet.getData(dataPath).insert(item);
+				self.setEntityState(entity, dorado.Entity.STATE_NEW);
+			})
+		} else {
+			dataSet.getData(dataPath).insert(object);
+		}
+		if (jQuery.isFunction(this.importCallback)) {
+			this.importCallback();
+		}
 	}
 
 	function setEntityState(entity, state) {
@@ -38,55 +77,37 @@
 		}
 		entity.state = state;
 		var json = entity.toJSON();
-		for(var p in json){
+		for ( var p in json) {
 			var value = entity.get(p);
-			if (value instanceof dorado.Entity){
+			if (value instanceof dorado.Entity) {
 				setEntityState(value, state);
-			} else if (value instanceof dorado.EntityList){
-				value.each(function(item){
+			} else if (value instanceof dorado.EntityList) {
+				value.each(function(item) {
 					setEntityState(item, state);
 				});
 			}
 		}
 	}
 
-	function importData(data) {
-		var dataSet = __dataGrid.get("dataSet");
-		var dataPath = __dataGrid.get("dataPath");
 
-		var object = dorado.JSON.parse(LZString.decompressFromBase64(data));
-		console.log(object);
-		if (jQuery.isFunction(object.each)) {
-			object.each(function(item) {
-				var entity = dataSet.getData(dataPath).insert(item);
-				setEntityState(entity, dorado.Entity.STATE_NEW);
-			})
-		} else {
-			dataSet.getData(dataPath).insert(object);
-		}
-		if (jQuery.isFunction(__importCallback)) {
-			__importCallback();
-		}
-	}
 
 	function setData(data, property, value) {
 		var properties = property.split(".");
 
 		if (properties.length > 1) {
 			if (jQuery.isFunction(data.each)) {
+				var self = this;
 				data.each(function(item) {
 					if (!item[properties[0]]) {
 						item[properties[0]] = {};
 					}
-					setData(item[properties[0]], properties.slice(1).join("."),
-							value);
+					self.setData(item[properties[0]], properties.slice(1).join("."), value);
 				})
 			} else {
 				if (!data[properties[0]]) {
 					data[properties[0]] = {};
 				}
-				setData(data[properties[0]], properties.slice(1).join("."),
-						value);
+				setData(data[properties[0]], properties.slice(1).join("."), value);
 			}
 		} else {
 			if (jQuery.isFunction(data.each)) {
@@ -101,17 +122,23 @@
 
 	win.coke = win.coke || {};
 
-	win.coke.DataTransfer = function(view, dataGrid, ignoreProperties,
-			importCallback) {
-		__view = view;
-		__dataGrid = dataGrid;
+	win.coke.DataTransfer = function(dataControl, ignoreProperties, importCallback, references) {
+		this.dataControl = dataControl;
 		if (typeof ignoreProperties == "string") {
-			__ignoreProperties = ignoreProperties.split(",");
+			this.ignoreProperties = ignoreProperties.split(",");
 		}
-		__importCallback = importCallback;
+		
+		if (typeof references == "string"){
+			this.references = references.split(",");
+		}
+		this.importCallback = importCallback;
 	}
-	win.coke.DataTransfer.prototype.exportData = exportData;
-	win.coke.DataTransfer.prototype.importData = importData;
-	win.coke.DataTransfer.setData = setData;
+	var prototype = win.coke.DataTransfer.prototype;
+	prototype.exportBase64 = exportBase64;
+	prototype.importBase64 = importBase64;
+	prototype.exportObject = exportObject;
+	prototype.importObject = importObject;
+	prototype.setData = setData;
+	prototype.setEntityState = setEntityState;
 
 }(window))

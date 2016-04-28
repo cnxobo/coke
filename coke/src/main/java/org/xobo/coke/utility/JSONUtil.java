@@ -1,18 +1,26 @@
 package org.xobo.coke.utility;
 
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 public class JSONUtil {
+  public static final String IGNORE_PROPERTEIS_FILTER = "ignoreProperteisFilter";
 
   public static String toJSON(Object object) {
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = getObjectMapper();
     StringWriter writer = new StringWriter();
     try {
       mapper.writeValue(writer, object);
@@ -22,12 +30,34 @@ public class JSONUtil {
     return writer.toString();
   }
 
+  public static ObjectMapper getObjectMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    return mapper;
+  }
+
+
+  public static String toJSON(Object object, String... ignoreProperties) {
+    ObjectMapper mapper = getObjectMapper();
+    StringWriter writer = new StringWriter();
+    mapper.addMixIn(Object.class, PropertyFilterMixIn.class);
+    FilterProvider filterProvider = new SimpleFilterProvider().addFilter(IGNORE_PROPERTEIS_FILTER,
+        SimpleBeanPropertyFilter.serializeAllExcept(ignoreProperties));
+    try {
+      mapper.writer(filterProvider).writeValue(writer, object);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return writer.toString();
+  }
+
+
   public static Object toObject(String json) {
     return toObject(json, Object.class);
   }
 
   public static <T> T toObject(String json, Class<T> clazz) {
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = getObjectMapper();
     try {
       return mapper.readValue(json, clazz);
     } catch (Exception e) {
@@ -40,7 +70,7 @@ public class JSONUtil {
   }
 
   public static <T> T toObject(TreeNode treeNode, Class<T> clazz) {
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = getObjectMapper();
     try {
       return mapper.treeToValue(treeNode, clazz);
     } catch (Exception e) {
@@ -58,7 +88,7 @@ public class JSONUtil {
     if (json == null) {
       return null;
     }
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = getObjectMapper();
     try {
       JavaType javaType =
           mapper.getTypeFactory().constructParametrizedType(LinkedHashMap.class, Map.class,
@@ -70,13 +100,13 @@ public class JSONUtil {
   }
 
   public static ObjectMapper getMapper() {
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = getObjectMapper();
     return mapper;
   }
 
   public static String prettyJSON(Object object) {
     String json = null;
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = getObjectMapper();
     try {
       json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
     } catch (Exception e) {
@@ -87,8 +117,21 @@ public class JSONUtil {
 
   public static void main(String[] args) {
     String json = "[{\"name\":\"aaa\"},{\"name\":\"bbb\"}]";
-    Object object = toObject(json, null);
+    Object object = toObject(json, Object.class);
     System.out.println(object);
+
+    Map<String, Object> parameter = new HashMap<String, Object>();
+    parameter.put("name", "bing");
+    parameter.put("age", 30);
+    parameter.put("bod", new Date());
+
+    json = toJSON(parameter, "name");
+    System.out.println(json);
   }
 
+}
+
+
+@JsonFilter(JSONUtil.IGNORE_PROPERTEIS_FILTER)
+class PropertyFilterMixIn {
 }
