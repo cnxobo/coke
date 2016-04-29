@@ -120,4 +120,11 @@ public class FileStorageServiceImpl implements FileStorageService {
         .getInputStream(cokeFileInfo.getRelativePath());
   }
 
+  @Override
+  public String getAbsolutePath(String fileNo) throws FileNotFoundException {
+    CokeFileInfo cokeFileInfo = get(fileNo);
+    return getFileStorageProvider(cokeFileInfo.getFileStorageType())
+        .getAbsolutePath(cokeFileInfo.getRelativePath());
+  }
+
 }

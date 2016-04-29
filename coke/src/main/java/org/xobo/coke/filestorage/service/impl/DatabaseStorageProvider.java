@@ -50,43 +50,51 @@ public class DatabaseStorageProvider implements FileStorageProvider {
     return put(file.getInputStream());
   }
 
-  @Override
-  public InputStream getInputStream(String relativePath) throws FileNotFoundException {
+  public String getAbsolutePath(String relativePath) throws FileNotFoundException {
     String path = null;
     File file = null;
-    if (enableLocalFileCache) {
-      path = DigestUtils.md5Hex(relativePath);
-      path = rebuildString(path, File.separator, 8, 4, 4, 4);
-      file = new File(databaseCachedfileSystemStorageLocation + path);
-      if (file.exists()) {
-        return new FileInputStream(file);
-      }
+    path = DigestUtils.md5Hex(relativePath);
+    path = rebuildString(path, File.separator, 8, 4, 4, 4);
+    file = new File(databaseCachedfileSystemStorageLocation + path);
+    if (file.exists()) {
+      return file.getAbsolutePath();
     }
 
-    InputStream inputStream = null;
     CokeBlob cokeBlob = cokeBlobService.get(Long.valueOf(relativePath));
     if (cokeBlob != null) {
       byte[] data = cokeBlob.getData();
-      inputStream = new ByteArrayInputStream(data);
-      if (enableLocalFileCache) {
-        InputStream is = new ByteArrayInputStream(data);
-        File parent = file.getParentFile();
-        if (!parent.exists()) {
-          parent.mkdirs();
-        }
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        try {
-          IOUtils.copy(inputStream, fileOutputStream);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        } finally {
-          IOUtils.closeQuietly(is);
-          IOUtils.closeQuietly(fileOutputStream);
-        }
+      InputStream inputStream = new ByteArrayInputStream(data);
+      File parent = file.getParentFile();
+      if (!parent.exists()) {
+        parent.mkdirs();
       }
-      inputStream = new ByteArrayInputStream(data);
+      FileOutputStream fileOutputStream = new FileOutputStream(file);
+      try {
+        IOUtils.copy(inputStream, fileOutputStream);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      } finally {
+        IOUtils.closeQuietly(fileOutputStream);
+      }
     } else {
       throw new FileNotFoundException("CokeBlob Reocrd not found " + relativePath);
+    }
+    return file.getAbsolutePath();
+  }
+
+  @Override
+  public InputStream getInputStream(String relativePath) throws FileNotFoundException {
+    InputStream inputStream = null;
+    if (enableLocalFileCache) {
+      String absolutePath = getAbsolutePath(relativePath);
+      inputStream = new FileInputStream(absolutePath);
+    } else {
+      CokeBlob cokeBlob = cokeBlobService.get(Long.valueOf(relativePath));
+      if (cokeBlob != null) {
+        byte[] data = cokeBlob.getData();
+        inputStream = new ByteArrayInputStream(data);
+      }
+
     }
     return inputStream;
   }

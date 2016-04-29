@@ -66,4 +66,10 @@ public class FileSystemStorageProvider implements FileStorageProvider {
   public String getType() {
     return ProviderType;
   }
+
+  @Override
+  public String getAbsolutePath(String relativePath) throws FileNotFoundException {
+    File targetFile = getTargetFile(fileSystemStorageLocation, relativePath);
+    return targetFile.getAbsolutePath();
+  }
 }

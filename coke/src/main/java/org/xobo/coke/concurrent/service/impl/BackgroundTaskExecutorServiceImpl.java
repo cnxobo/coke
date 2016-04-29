@@ -117,6 +117,7 @@ public class BackgroundTaskExecutorServiceImpl
 
       @Override
       public void onFailure(Throwable t) {
+        logger.error("后台任务异常", t);
         backgroundTaskService.markFailure(taskId, t);
         backgroundTaskMap.remove(taskId);
       }

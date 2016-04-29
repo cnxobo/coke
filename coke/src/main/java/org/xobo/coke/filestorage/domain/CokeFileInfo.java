@@ -46,7 +46,7 @@ public class CokeFileInfo {
     this.filename = filename;
   }
 
-  @Column(name = "FILE_STORAGE_TYPE")
+  @Column(name = "FILESTORAGE_TYPE")
   public String getFileStorageType() {
     return fileStorageType;
   }

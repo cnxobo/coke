@@ -23,6 +23,8 @@ public interface FileStorageService {
 
   CokeFileInfo get(String fileNo);
 
+  String getAbsolutePath(String fileNo) throws FileNotFoundException;
+
   InputStream getInputStream(String fileNo) throws FileNotFoundException;
 
   InputStream getInputStream(CokeFileInfo cokeFileInfo) throws FileNotFoundException;

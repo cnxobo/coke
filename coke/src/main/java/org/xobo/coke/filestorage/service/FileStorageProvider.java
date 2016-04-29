@@ -15,4 +15,6 @@ public interface FileStorageProvider {
   String put(MultipartFile file) throws IllegalStateException, IOException;
 
   InputStream getInputStream(String relativePath) throws FileNotFoundException;
+
+  String getAbsolutePath(String relativePath) throws FileNotFoundException;
 }
