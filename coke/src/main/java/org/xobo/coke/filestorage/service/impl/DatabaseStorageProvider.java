@@ -51,6 +51,10 @@ public class DatabaseStorageProvider implements FileStorageProvider {
   }
 
   public String getAbsolutePath(String relativePath) throws FileNotFoundException {
+    if (!enableLocalFileCache) {
+      return null;
+    }
+
     String path = null;
     File file = null;
     path = DigestUtils.md5Hex(relativePath);
@@ -85,8 +89,8 @@ public class DatabaseStorageProvider implements FileStorageProvider {
   @Override
   public InputStream getInputStream(String relativePath) throws FileNotFoundException {
     InputStream inputStream = null;
-    if (enableLocalFileCache) {
-      String absolutePath = getAbsolutePath(relativePath);
+    String absolutePath = getAbsolutePath(relativePath);
+    if (absolutePath != null) {
       inputStream = new FileInputStream(absolutePath);
     } else {
       CokeBlob cokeBlob = cokeBlobService.get(Long.valueOf(relativePath));

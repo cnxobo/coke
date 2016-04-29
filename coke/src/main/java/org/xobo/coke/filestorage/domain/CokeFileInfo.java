@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity(name = "CK_FILE_INFO")
 public class CokeFileInfo {
@@ -16,6 +17,7 @@ public class CokeFileInfo {
   private String relativePath;
   private Date createTime;
   private String createBy;
+  private String absolutePath;
 
   @Id
   @GeneratedValue
@@ -28,7 +30,7 @@ public class CokeFileInfo {
     this.id = id;
   }
 
-  @Column(name = "FILE_NO")
+  @Column(name = "FILE_NO", unique = true)
   public String getFileNo() {
     return fileNo;
   }
@@ -80,6 +82,15 @@ public class CokeFileInfo {
 
   public void setCreateBy(String createBy) {
     this.createBy = createBy;
+  }
+
+  @Transient
+  public String getAbsolutePath() {
+    return absolutePath;
+  }
+
+  public void setAbsolutePath(String absolutePath) {
+    this.absolutePath = absolutePath;
   }
 
 }

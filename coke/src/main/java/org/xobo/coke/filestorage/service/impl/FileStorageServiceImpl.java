@@ -68,11 +68,18 @@ public class FileStorageServiceImpl implements FileStorageService {
 
   @SuppressWarnings("unchecked")
   @Override
-  public CokeFileInfo get(String fileNo) {
+  public CokeFileInfo get(String fileNo) throws FileNotFoundException {
     DetachedCriteria dc = DetachedCriteria.forClass(CokeFileInfo.class);
     dc.add(Restrictions.eq("fileNo", fileNo));
     Collection<CokeFileInfo> cokeFileInfos = (Collection<CokeFileInfo>) cokeHibernate.query(dc);
-    return cokeFileInfos.isEmpty() ? null : cokeFileInfos.iterator().next();
+    CokeFileInfo cokeFileInfo = cokeFileInfos.isEmpty() ? null : cokeFileInfos.iterator().next();
+
+    if (cokeFileInfo != null) {
+      String absolutePath = getFileStorageProvider(cokeFileInfo.getFileStorageType())
+          .getAbsolutePath(cokeFileInfo.getRelativePath());
+      cokeFileInfo.setAbsolutePath(absolutePath);
+    }
+    return cokeFileInfo;
   }
 
   FileStorageProvider getFileStorageProvider(String fileStorageType) {
@@ -123,8 +130,7 @@ public class FileStorageServiceImpl implements FileStorageService {
   @Override
   public String getAbsolutePath(String fileNo) throws FileNotFoundException {
     CokeFileInfo cokeFileInfo = get(fileNo);
-    return getFileStorageProvider(cokeFileInfo.getFileStorageType())
-        .getAbsolutePath(cokeFileInfo.getRelativePath());
+    return cokeFileInfo != null ? cokeFileInfo.getAbsolutePath() : null;
   }
 
 }

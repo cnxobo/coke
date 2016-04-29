@@ -21,7 +21,7 @@ public interface FileStorageService {
   CokeFileInfo put(String fileStroageType, MultipartFile file, String filename)
       throws IllegalStateException, IOException;
 
-  CokeFileInfo get(String fileNo);
+  CokeFileInfo get(String fileNo) throws FileNotFoundException;
 
   String getAbsolutePath(String fileNo) throws FileNotFoundException;
 
