@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Index;
+
 import com.bstek.dorado.annotation.PropertyDef;
 
 @Entity(name = "CK_BACKGROUND_TASK_LOG")
@@ -111,6 +113,7 @@ public class BackgroundTaskLog {
   }
 
   @Column(name = "OPERATOR")
+  @Index(name = "IDX_OPERATOR")
   public String getOperator() {
     return operator;
   }
@@ -120,6 +123,7 @@ public class BackgroundTaskLog {
   }
 
   @Column(name = "PROCESS_BY")
+  @Index(name = "IDX_PROCESS_BY")
   public String getProcessBy() {
     return processBy;
   }

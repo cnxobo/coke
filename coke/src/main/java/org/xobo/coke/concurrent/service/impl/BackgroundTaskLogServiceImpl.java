@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,8 @@ public class BackgroundTaskLogServiceImpl implements BackgroundTaskLogService {
     backgroundTaskLog.setStatus("P");
     backgroundTaskLog.setCreateDate(new Date());
     backgroundTaskLog.setProcessBy(nodeName);
+    String userId = MapUtils.getString(parameter, "userId");
+    backgroundTaskLog.setOperator(userId);
     backgroundTaskRepository.save(backgroundTaskLog);
     return taskId;
   }

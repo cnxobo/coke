@@ -21,7 +21,7 @@ public class BackgroundTaskRepository {
     String hql = "update " + BackgroundTaskLog.class.getName()
         + " t set t.status = :status, t.result = :result, t.endDate = :endDate where t.taskId = :taskId";
     return cokeHibernate.getSession().createQuery(hql).setString("status", status)
-        .setDate("endDate", new Date())
+        .setTimestamp("endDate", new Date())
         .setString("result", result).setString("taskId", taskId).executeUpdate();
 
   }
