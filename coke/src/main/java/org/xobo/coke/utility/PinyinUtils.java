@@ -19,7 +19,7 @@ public class PinyinUtils {
     if (!StringUtils.hasText(hanzi)) {
       return Collections.emptyList();
     }
-    
+
 
     Collection<Collection<String>> pinYinTokenList = new ArrayList<Collection<String>>();
     for (int i = 0; i < hanzi.length(); i++) {

@@ -5,10 +5,10 @@ import org.hibernate.criterion.DetachedCriteria;
 import com.bstek.dorado.data.provider.Criteria;
 
 public interface HibernateCriteriaBuilder {
-	public static final String BEAN_ID = "coke.hibernateCriteriaBuilder";
+  public static final String BEAN_ID = "coke.hibernateCriteriaBuilder";
 
-	DetachedCriteria buildDetachedCriteria(Criteria criteria, Class<?> entityClass);
+  DetachedCriteria buildDetachedCriteria(Criteria criteria, Class<?> entityClass);
 
-	DetachedCriteria buildDetachedCriteria(Criteria criteria, Class<?> entityClass, String alias);
+  DetachedCriteria buildDetachedCriteria(Criteria criteria, Class<?> entityClass, String alias);
 
 }

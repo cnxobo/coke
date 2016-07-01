@@ -5,11 +5,11 @@ import java.util.Collection;
 import org.xobo.coke.model.SkinInfo;
 
 public interface SkinService {
-	public static final String BEAN_ID = "coke.skinService";
+  public static final String BEAN_ID = "coke.skinService";
 
-	Collection<SkinInfo> loadSkinInfos();
+  Collection<SkinInfo> loadSkinInfos();
 
-	void changeSkin(String skinName);
+  void changeSkin(String skinName);
 
-	void setDefaultSkin();
+  void setDefaultSkin();
 }

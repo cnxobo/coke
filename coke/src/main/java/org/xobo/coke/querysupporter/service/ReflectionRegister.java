@@ -7,5 +7,5 @@ import java.lang.reflect.Field;
  * 
  */
 public interface ReflectionRegister {
-	void register(Class<?> clazz, Field field);
+  void register(Class<?> clazz, Field field);
 }

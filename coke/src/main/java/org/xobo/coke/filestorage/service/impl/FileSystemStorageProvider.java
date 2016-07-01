@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
@@ -26,7 +27,9 @@ public class FileSystemStorageProvider implements FileStorageProvider {
   public String put(InputStream inputStream) throws IOException {
     String relativePath = getRelativPath();
     File targetFile = getTargetFile(fileSystemStorageLocation, relativePath);
-    IOUtils.copy(inputStream, new FileOutputStream(targetFile));
+    OutputStream os = new FileOutputStream(targetFile);
+    IOUtils.copy(inputStream, os);
+    IOUtils.closeQuietly(os);
     return relativePath;
   }
 

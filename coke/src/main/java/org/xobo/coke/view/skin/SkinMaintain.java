@@ -13,20 +13,20 @@ import com.bstek.dorado.annotation.Expose;
 
 @Controller("coke.skinMaintain")
 public class SkinMaintain {
-	@Resource(name = SkinService.BEAN_ID)
-	private SkinService skinService;
+  @Resource(name = SkinService.BEAN_ID)
+  private SkinService skinService;
 
-	public void initSkin() {
-		skinService.setDefaultSkin();
-	}
+  public void initSkin() {
+    skinService.setDefaultSkin();
+  }
 
-	@DataProvider
-	public Collection<SkinInfo> loadSkinInfos() {
-		return skinService.loadSkinInfos();
-	}
+  @DataProvider
+  public Collection<SkinInfo> loadSkinInfos() {
+    return skinService.loadSkinInfos();
+  }
 
-	@Expose
-	public void changeSkin(String skinName) {
-		skinService.changeSkin(skinName);
-	}
+  @Expose
+  public void changeSkin(String skinName) {
+    skinService.changeSkin(skinName);
+  }
 }

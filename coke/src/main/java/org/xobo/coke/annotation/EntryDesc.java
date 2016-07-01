@@ -6,13 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 public @interface EntryDesc {
-	String provider();
+  String provider();
 
-	String categroyKey();
+  String categroyKey();
 
-	String entryKeyProperty();
+  String entryKeyProperty();
 
-	String comment() default "";
+  String comment() default "";
 }

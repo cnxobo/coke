@@ -8,10 +8,34 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.MapUtils;
 
+import com.bstek.dorado.data.entity.EntityState;
+import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Page;
 
 public class ClassUtils {
   private static Map<Type, InstanceCreator> classNewInstance = new HashMap<Type, InstanceCreator>();
+
+  public static <T> T createNewEntity(Class<T> clazz, Object instance) {
+    T obj = createNewInstance(clazz);
+    try {
+      BeanUtils.copyProperties(obj, instance);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return obj;
+  }
+
+  public static <T> T createNewInstance(Class<T> clazz) {
+    T obj = null;
+    try {
+      obj = clazz.newInstance();
+      obj = EntityUtils.toEntity(obj);
+      EntityUtils.setState(obj, EntityState.NEW);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return obj;
+  }
 
   static class PageInstanceCreator implements InstanceCreator {
     public static Constructor<?> contructor = null;

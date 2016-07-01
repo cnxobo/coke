@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 public @interface Pinyin {
-	String quan() default "";
+  String quan() default "";
 
-	String jian() default "";
+  String jian() default "";
 }

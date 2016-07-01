@@ -30,47 +30,47 @@ import com.bstek.dorado.core.EngineStartupListener;
 @Service
 public class HibernateEntityEnhancerImpl extends EngineStartupListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(HibernateEntityEnhancerImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(HibernateEntityEnhancerImpl.class);
 
-	@Autowired
-	private Collection<ReflectionRegister> reflectionRegisters;
-	@Resource(name = CokeHibernate.BEAN_ID)
-	private CokeHibernate cokeHibernate;
+  @Autowired
+  private Collection<ReflectionRegister> reflectionRegisters;
+  @Resource(name = CokeHibernate.BEAN_ID)
+  private CokeHibernate cokeHibernate;
 
-	@Override
-	public void onStartup() throws Exception {
-		logger.info("analyze hibernate entity");
-		Session session = cokeHibernate.getSessionFactory().openSession();
-		SessionFactory sessionFactory = session.getSessionFactory();
-		Map<String, ClassMetadata> map = sessionFactory.getAllClassMetadata();
-		for (String className : map.keySet()) {
-			ClassMetadata classMetadata = map.get(className);
-			String[] propertyNames = classMetadata.getPropertyNames();
-			Collection<String> properties = new HashSet<String>(Arrays.asList(propertyNames));
-			String identifierProperty = classMetadata.getIdentifierPropertyName();
-			if (identifierProperty != null) {
-				properties.add(identifierProperty);
-			}
-			try {
-				Class<?> clazz = Class.forName(className);
-				Collection<Field> fields = BeanReflectionUtils.loadClassFields(clazz);
-				for (Field field : fields) {
-					if (properties.contains(field.getName())) {
-						for (ReflectionRegister register : reflectionRegisters) {
-							register.register(clazz, field);
-						}
-					}
-				}
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+  @Override
+  public void onStartup() throws Exception {
+    logger.info("analyze hibernate entity");
+    Session session = cokeHibernate.getSessionFactory().openSession();
+    SessionFactory sessionFactory = session.getSessionFactory();
+    Map<String, ClassMetadata> map = sessionFactory.getAllClassMetadata();
+    for (String className : map.keySet()) {
+      ClassMetadata classMetadata = map.get(className);
+      String[] propertyNames = classMetadata.getPropertyNames();
+      Collection<String> properties = new HashSet<String>(Arrays.asList(propertyNames));
+      String identifierProperty = classMetadata.getIdentifierPropertyName();
+      if (identifierProperty != null) {
+        properties.add(identifierProperty);
+      }
+      try {
+        Class<?> clazz = Class.forName(className);
+        Collection<Field> fields = BeanReflectionUtils.loadClassFields(clazz);
+        for (Field field : fields) {
+          if (properties.contains(field.getName())) {
+            for (ReflectionRegister register : reflectionRegisters) {
+              register.register(clazz, field);
+            }
+          }
+        }
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
 
-	}
+  }
 
-	@Override
-	public int getOrder() {
-		return 10000;
-	}
+  @Override
+  public int getOrder() {
+    return 10000;
+  }
 
 }

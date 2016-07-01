@@ -13,11 +13,16 @@ org.xobo.coke.renderDataGridError = function(arg, errorColor) {
 			}
 		});
 	}
+	
+	
 	qdom = $fly(arg.dom);
+	entity.originalBackgroundColor = entity.originalBackgroundColor || qdom.css("background-color");
+	var finalColor = arg.finalColor || entity.originalBackgroundColor;
 	if (error) {
+		arg.finalColor = errorColor;
 		qdom.css("background-color", errorColor);
 	} else {
-		qdom.css("background-color", "");
+		qdom.css("background-color", finalColor);
 	}
 	arg.processDefault = true;
 }

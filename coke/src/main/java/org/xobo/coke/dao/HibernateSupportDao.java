@@ -216,7 +216,8 @@ public class HibernateSupportDao<K> extends HibernateDao {
     persistEntities(entites, null, null);
   }
 
-  public void persistEntities(Collection<? extends IBase<K>> entites, PersistWrapper persistWrapper) {
+  public void persistEntities(Collection<? extends IBase<K>> entites,
+      PersistWrapper persistWrapper) {
     persistEntities(entites, null, persistWrapper);
   }
 
@@ -321,17 +322,17 @@ public class HibernateSupportDao<K> extends HibernateDao {
     }
     setPathValue(session, entity, parent);
   }
-  
-  public void insertEntities(Collection<? extends IBase<K>> entites){
-    if (CollectionUtils.isEmpty(entites)){
+
+  public void insertEntities(Collection<? extends IBase<K>> entites) {
+    if (CollectionUtils.isEmpty(entites)) {
       return;
     }
-    
+
     IUser user = ContextHolder.getLoginUser();
     Session session = this.getSession();
-    
+
     for (IBase<K> iBase : entites) {
-     insertEntity(session, iBase, user); 
+      insertEntity(session, iBase, user);
     }
   }
 
@@ -453,7 +454,8 @@ public class HibernateSupportDao<K> extends HibernateDao {
     return page;
   }
 
-  protected org.hibernate.Criteria setPageParameterToCriteria(org.hibernate.Criteria c, Page<?> page) {
+  protected org.hibernate.Criteria setPageParameterToCriteria(org.hibernate.Criteria c,
+      Page<?> page) {
     c.setFirstResult(page.getFirstEntityIndex());
     c.setMaxResults(page.getPageSize());
     return c;
@@ -491,7 +493,8 @@ public class HibernateSupportDao<K> extends HibernateDao {
     return count;
   }
 
-  public void rebuildTypePath(Criteria criteria, Class<?> clazz, K parentId, String parentTypePath) {
+  public void rebuildTypePath(Criteria criteria, Class<?> clazz, K parentId,
+      String parentTypePath) {
     parentTypePath = parentTypePath == null ? PathModel.TypeSeparator : parentTypePath;
     recursiveBuildTypePath(criteria, clazz, parentId, parentTypePath);
   }

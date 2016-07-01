@@ -16,7 +16,7 @@ public class SHACheckSumExample {
     int nread = 0;
     while ((nread = fis.read(dataBytes)) != -1) {
       md.update(dataBytes, 0, nread);
-    };
+    } ;
     byte[] mdbytes = md.digest();
 
     // convert the byte to hex format method 1
@@ -36,7 +36,8 @@ public class SHACheckSumExample {
     System.out.println("Hex format : " + hexString.toString());
 
     System.out.println(
-        "Hex format : " + DigestUtils.sha1Hex(new FileInputStream("/Users/Bing/Downloads.rar.dmg")));
+        "Hex format : "
+            + DigestUtils.sha1Hex(new FileInputStream("/Users/Bing/Downloads.rar.dmg")));
 
   }
 }

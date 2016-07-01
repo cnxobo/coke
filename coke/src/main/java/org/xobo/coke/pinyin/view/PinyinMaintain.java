@@ -36,10 +36,10 @@ import com.github.stuxuhai.jpinyin.PinyinHelper;
 
 @Service("coke.pinyinMaintain")
 public class PinyinMaintain {
-  
+
   @DataProvider
-  public Collection<Pinyin> loadAllPinyin(String hanzi){
-   return PinyinUtils.toPinyin(hanzi); 
+  public Collection<Pinyin> loadAllPinyin(String hanzi) {
+    return PinyinUtils.toPinyin(hanzi);
   }
 
   @DataProvider
@@ -98,7 +98,7 @@ public class PinyinMaintain {
       criteria.setFirstResult(0);
       criteria.setMaxResults(batchSize);
       list = criteria.list();
-      
+
       Transaction transaction = session.beginTransaction();
       for (Object object : list) {
         try {

@@ -116,7 +116,8 @@ public class MethodUtils {
           Type[] typeArguments = parameterizedType.getActualTypeArguments();
           Type rawType = parameterizedType.getRawType();
           Collection<Object> collection = new ArrayList<Object>();
-          if (rawType instanceof Class<?> && Collection.class.isAssignableFrom((Class<?>) rawType)) {
+          if (rawType instanceof Class<?>
+              && Collection.class.isAssignableFrom((Class<?>) rawType)) {
             if (typeArguments.length > 0) {
               Type typeArgument = typeArguments[0];
               Class<?> rt = (Class<?>) typeArgument;

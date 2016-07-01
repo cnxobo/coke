@@ -1,30 +1,29 @@
 package org.xobo.coke.entity;
 
 public class ReferenceWrapper {
-	private String property;
-	private Class<?> clazz;
+  private String property;
+  private Class<?> clazz;
 
-	public ReferenceWrapper() {
-	}
+  public ReferenceWrapper() {}
 
-	public ReferenceWrapper(String property, Class<?> clazz) {
-		this.property = property;
-		this.clazz = clazz;
-	}
+  public ReferenceWrapper(String property, Class<?> clazz) {
+    this.property = property;
+    this.clazz = clazz;
+  }
 
-	public String getProperty() {
-		return property;
-	}
+  public String getProperty() {
+    return property;
+  }
 
-	public void setProperty(String property) {
-		this.property = property;
-	}
+  public void setProperty(String property) {
+    this.property = property;
+  }
 
-	public Class<?> getClazz() {
-		return clazz;
-	}
+  public Class<?> getClazz() {
+    return clazz;
+  }
 
-	public void setClazz(Class<?> clazz) {
-		this.clazz = clazz;
-	}
+  public void setClazz(Class<?> clazz) {
+    this.clazz = clazz;
+  }
 }
