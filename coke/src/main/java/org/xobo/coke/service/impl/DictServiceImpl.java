@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.xobo.coke.dataType.ListMap;
 import org.xobo.coke.model.DictEntry;
 import org.xobo.coke.service.DictEntriesProvider;
 import org.xobo.coke.service.DictService;
@@ -40,11 +41,12 @@ public class DictServiceImpl implements DictService {
   @Resource(name = ApplicationCache.BEAN_ID)
   private ApplicationCache applicationCache;
 
-  private Set<String> cacheKeySet = new HashSet<String>();
+  private ListMap<String, String> cacheKeys = ListMap.concurrentHashMap();
 
   public static final String Prefix = "DictEntry:";
 
   public static final String KeySeparater = "|";
+
 
   @Override
   public Collection<DictEntry> lookup(String type, Object categorykey, Object... extraTypes) {
@@ -55,6 +57,7 @@ public class DictServiceImpl implements DictService {
   private Map<Object, DictEntry> loadDictEntryMap(String type, Object categorykey,
       Object... extraTypes) {
     assert categorykey != null;
+
     StringBuilder cacheKeyBuilder = new StringBuilder(Prefix + type + KeySeparater + categorykey);
     for (Object object : extraTypes) {
       cacheKeyBuilder.append(KeySeparater).append(object);
@@ -79,7 +82,7 @@ public class DictServiceImpl implements DictService {
         }
       }
 
-      cacheKeySet.add(cacheKey);
+      cacheKeys.add(Prefix + type, cacheKey);
       applicationCache.putCacheObject(cacheKey, dictEntryMap);
     }
     return dictEntryMap;
@@ -88,12 +91,24 @@ public class DictServiceImpl implements DictService {
   @Override
   public void removeCache(Object... types) {
     if (types.length == 0) {
-      for (String cacheKey : cacheKeySet) {
-        applicationCache.removeCacheObject(cacheKey);
+      Collection<Collection<String>> keyLists = cacheKeys.getData().values();
+      for (Collection<String> keyList : keyLists) {
+        for (String key : keyList) {
+          applicationCache.removeCacheObject(key);
+        }
       }
+      cacheKeys = ListMap.concurrentHashMap();
     } else {
       for (Object object : types) {
-        applicationCache.removeCacheObject(Prefix + object);
+        String k = Prefix + object;
+        Collection<String> keys = cacheKeys.getValue(k);
+        if (keys == null) {
+          return;
+        }
+        for (String key : keys) {
+          applicationCache.removeCacheObject(key);
+        }
+        cacheKeys.remove(k);
       }
     }
   }

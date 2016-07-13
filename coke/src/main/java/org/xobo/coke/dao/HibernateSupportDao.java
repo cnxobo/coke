@@ -423,11 +423,6 @@ public class HibernateSupportDao<K> extends HibernateDao {
   }
 
   public void deleteEntity(Session session, IBase<?> baseEntity, IUser user) {
-    if (user == null) {
-      user = ContextHolder.getLoginUser();
-    }
-    baseEntity.setUpdateUser(user.getUsername());
-    baseEntity.setUpdateDate(new Date());
     session.delete(baseEntity);
   }
 
