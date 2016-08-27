@@ -10,4 +10,6 @@ public interface DictEntriesProvider {
 
   String getType();
 
+  boolean cacheable();
+
 }

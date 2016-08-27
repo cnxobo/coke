@@ -75,7 +75,7 @@ public class ListMap<K, V> {
 
   public boolean removeValue(K key, V value) {
     Collection<V> list = data.get(key);
-    return list != null ? list.remove(value) : null;
+    return list != null ? list.remove(value) : false;
   }
 
   /**

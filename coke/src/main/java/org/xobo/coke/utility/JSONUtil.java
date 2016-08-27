@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +34,7 @@ public class JSONUtil {
   public static ObjectMapper getObjectMapper() {
     ObjectMapper mapper = new ObjectMapper();
     mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     return mapper;
   }
 
@@ -79,9 +81,27 @@ public class JSONUtil {
   }
 
   public static JsonNode toJsonNode(Object obj) {
+    if (obj == null) {
+      return null;
+    }
     ObjectMapper mapper = getMapper();
     return mapper.valueToTree(obj);
   }
+
+  public static JsonNode toJsonNode(String json) {
+    Map<String, Object> parameter = new HashMap<String, Object>();
+
+    if (json == null) {
+      return null;
+    }
+    ObjectMapper mapper = getMapper();
+    try {
+      return mapper.readTree(json);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
 
   public static Map<String, Object> toMap(String json) {
@@ -97,6 +117,15 @@ public class JSONUtil {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static Map<String, Object> toMap(Object obj) {
+    ObjectMapper mapper = getObjectMapper();
+    JavaType javaType =
+        mapper.getTypeFactory().constructParametrizedType(LinkedHashMap.class, Map.class,
+            String.class, Object.class);
+    Map<String, Object> props = mapper.convertValue(obj, javaType);
+    return props;
   }
 
   public static ObjectMapper getMapper() {

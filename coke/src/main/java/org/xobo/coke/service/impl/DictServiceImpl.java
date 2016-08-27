@@ -3,10 +3,8 @@ package org.xobo.coke.service.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -50,7 +48,12 @@ public class DictServiceImpl implements DictService {
 
   @Override
   public Collection<DictEntry> lookup(String type, Object categorykey, Object... extraTypes) {
-    return loadDictEntryMap(type, categorykey, extraTypes).values();
+    try {
+      return loadDictEntryMap(type, categorykey, extraTypes).values();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   @SuppressWarnings("unchecked")
