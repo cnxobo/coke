@@ -1,10 +1,12 @@
 package org.xobo.coke.utility;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -20,6 +22,12 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 public class JSONUtil {
   public static final String IGNORE_PROPERTEIS_FILTER = "ignoreProperteisFilter";
 
+  /**
+   * 对象转JSON字符串
+   * 
+   * @param object
+   * @return
+   */
   public static String toJSON(Object object) {
     ObjectMapper mapper = getObjectMapper();
     StringWriter writer = new StringWriter();
@@ -31,6 +39,11 @@ public class JSONUtil {
     return writer.toString();
   }
 
+  /**
+   * 获取ObjectMapper
+   * 
+   * @return
+   */
   public static ObjectMapper getObjectMapper() {
     ObjectMapper mapper = new ObjectMapper();
     mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
@@ -39,6 +52,13 @@ public class JSONUtil {
   }
 
 
+  /**
+   * 对象转JSON字符串, 并忽略指定属性.
+   * 
+   * @param object
+   * @param ignoreProperties
+   * @return
+   */
   public static String toJSON(Object object, String... ignoreProperties) {
     ObjectMapper mapper = getObjectMapper();
     StringWriter writer = new StringWriter();
@@ -54,10 +74,23 @@ public class JSONUtil {
   }
 
 
+  /**
+   * JSON字符串转对象
+   * 
+   * @param json
+   * @return
+   */
   public static Object toObject(String json) {
     return toObject(json, Object.class);
   }
 
+  /**
+   * JSON字符串转指定类的实例.
+   * 
+   * @param json
+   * @param clazz
+   * @return
+   */
   public static <T> T toObject(String json, Class<T> clazz) {
     ObjectMapper mapper = getObjectMapper();
     try {
@@ -67,10 +100,23 @@ public class JSONUtil {
     }
   }
 
+  /**
+   * JSON TreeNode 转对象
+   * 
+   * @param treeNode
+   * @return
+   */
   public static Object toObject(TreeNode treeNode) {
     return toObject(treeNode, Object.class);
   }
 
+  /**
+   * JSON TreeNode 转 指定类的实例
+   * 
+   * @param treeNode
+   * @param clazz
+   * @return
+   */
   public static <T> T toObject(TreeNode treeNode, Class<T> clazz) {
     ObjectMapper mapper = getObjectMapper();
     try {
@@ -80,21 +126,29 @@ public class JSONUtil {
     }
   }
 
+  /**
+   * 对象解析为JSON Node
+   * 
+   * @param obj
+   * @return
+   */
   public static JsonNode toJsonNode(Object obj) {
     if (obj == null) {
       return null;
     }
-    ObjectMapper mapper = getMapper();
+    ObjectMapper mapper = getObjectMapper();
     return mapper.valueToTree(obj);
   }
 
+  /**
+   * @param json
+   * @return
+   */
   public static JsonNode toJsonNode(String json) {
-    Map<String, Object> parameter = new HashMap<String, Object>();
-
     if (json == null) {
       return null;
     }
-    ObjectMapper mapper = getMapper();
+    ObjectMapper mapper = getObjectMapper();
     try {
       return mapper.readTree(json);
     } catch (Exception e) {
@@ -104,6 +158,12 @@ public class JSONUtil {
 
 
 
+  /**
+   * JSON字符串转Map
+   * 
+   * @param json
+   * @return
+   */
   public static Map<String, Object> toMap(String json) {
     if (json == null) {
       return null;
@@ -119,6 +179,12 @@ public class JSONUtil {
     }
   }
 
+  /**
+   * Java对象转Map
+   * 
+   * @param obj
+   * @return
+   */
   public static Map<String, Object> toMap(Object obj) {
     ObjectMapper mapper = getObjectMapper();
     JavaType javaType =
@@ -128,11 +194,30 @@ public class JSONUtil {
     return props;
   }
 
-  public static ObjectMapper getMapper() {
+  /**
+   * JSON字符串转集合
+   * 
+   * @param json
+   * @param clazz
+   * @return
+   */
+  public static <T> List<T> jsonToList(String json, Class<T> clazz) {
     ObjectMapper mapper = getObjectMapper();
-    return mapper;
+    JavaType javaType =
+        mapper.getTypeFactory().constructCollectionType(List.class, clazz);
+    try {
+      return mapper.readValue(json, javaType);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
+  /**
+   * 对象转JSON字符串并格式化输出.
+   * 
+   * @param object
+   * @return
+   */
   public static String prettyJSON(Object object) {
     String json = null;
     ObjectMapper mapper = getObjectMapper();
@@ -142,20 +227,6 @@ public class JSONUtil {
       throw new RuntimeException(e);
     }
     return json;
-  }
-
-  public static void main(String[] args) {
-    String json = "[{\"name\":\"aaa\"},{\"name\":\"bbb\"}]";
-    Object object = toObject(json, Object.class);
-    System.out.println(object);
-
-    Map<String, Object> parameter = new HashMap<String, Object>();
-    parameter.put("name", "bing");
-    parameter.put("age", 30);
-    parameter.put("bod", new Date());
-
-    json = toJSON(parameter, "name");
-    System.out.println(json);
   }
 
 }
