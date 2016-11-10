@@ -36,7 +36,7 @@ public class MapMap<C, K, V> {
         kv = data.getClass().newInstance();
         data.put(c, kv);
       } catch (Exception e) {
-        e.printStackTrace();
+        throw new RuntimeException(e);
       }
     }
     return kv;

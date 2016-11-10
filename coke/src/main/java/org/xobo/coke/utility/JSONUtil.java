@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 public class JSONUtil {
   public static final String IGNORE_PROPERTEIS_FILTER = "ignoreProperteisFilter";
+  public static final String DEFAULT_DATE_FORMATE = "yyyy-MM-dd HH:mm:ss";
 
   /**
    * 对象转JSON字符串
@@ -27,7 +28,11 @@ public class JSONUtil {
    * @return
    */
   public static String toJSON(Object object) {
-    ObjectMapper mapper = getObjectMapper();
+    return toJSON(object, DEFAULT_DATE_FORMATE);
+  }
+
+  public static String toJSON(Object object, String dateFormat) {
+    ObjectMapper mapper = buildObjectMapper(dateFormat);
     StringWriter writer = new StringWriter();
     try {
       mapper.writeValue(writer, object);
@@ -42,9 +47,13 @@ public class JSONUtil {
    * 
    * @return
    */
-  public static ObjectMapper getObjectMapper() {
+  public static ObjectMapper buildObjectMapper() {
+    return buildObjectMapper("yyyy-MM-dd HH:mm:ss");
+  }
+
+  public static ObjectMapper buildObjectMapper(String dateFormat) {
     ObjectMapper mapper = new ObjectMapper();
-    mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    mapper.setDateFormat(new SimpleDateFormat(dateFormat));
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     return mapper;
   }
@@ -58,7 +67,7 @@ public class JSONUtil {
    * @return
    */
   public static String toJSON(Object object, String... ignoreProperties) {
-    ObjectMapper mapper = getObjectMapper();
+    ObjectMapper mapper = buildObjectMapper();
     StringWriter writer = new StringWriter();
     mapper.addMixIn(Object.class, PropertyFilterMixIn.class);
     FilterProvider filterProvider = new SimpleFilterProvider().addFilter(IGNORE_PROPERTEIS_FILTER,
@@ -90,7 +99,7 @@ public class JSONUtil {
    * @return
    */
   public static <T> T toObject(String json, Class<T> clazz) {
-    ObjectMapper mapper = getObjectMapper();
+    ObjectMapper mapper = buildObjectMapper();
     try {
       return mapper.readValue(json, clazz);
     } catch (Exception e) {
@@ -116,7 +125,7 @@ public class JSONUtil {
    * @return
    */
   public static <T> T toObject(TreeNode treeNode, Class<T> clazz) {
-    ObjectMapper mapper = getObjectMapper();
+    ObjectMapper mapper = buildObjectMapper();
     try {
       return mapper.treeToValue(treeNode, clazz);
     } catch (Exception e) {
@@ -134,7 +143,7 @@ public class JSONUtil {
     if (obj == null) {
       return null;
     }
-    ObjectMapper mapper = getObjectMapper();
+    ObjectMapper mapper = buildObjectMapper();
     return mapper.valueToTree(obj);
   }
 
@@ -146,7 +155,7 @@ public class JSONUtil {
     if (json == null) {
       return null;
     }
-    ObjectMapper mapper = getObjectMapper();
+    ObjectMapper mapper = buildObjectMapper();
     try {
       return mapper.readTree(json);
     } catch (Exception e) {
@@ -166,7 +175,7 @@ public class JSONUtil {
     if (json == null) {
       return null;
     }
-    ObjectMapper mapper = getObjectMapper();
+    ObjectMapper mapper = buildObjectMapper();
     try {
       JavaType javaType =
           mapper.getTypeFactory().constructParametrizedType(LinkedHashMap.class, Map.class,
@@ -184,7 +193,7 @@ public class JSONUtil {
    * @return
    */
   public static Map<String, Object> toMap(Object obj) {
-    ObjectMapper mapper = getObjectMapper();
+    ObjectMapper mapper = buildObjectMapper();
     JavaType javaType =
         mapper.getTypeFactory().constructParametrizedType(LinkedHashMap.class, Map.class,
             String.class, Object.class);
@@ -200,7 +209,7 @@ public class JSONUtil {
    * @return
    */
   public static <T> List<T> jsonToList(String json, Class<T> clazz) {
-    ObjectMapper mapper = getObjectMapper();
+    ObjectMapper mapper = buildObjectMapper();
     JavaType javaType =
         mapper.getTypeFactory().constructCollectionType(List.class, clazz);
     try {
@@ -218,7 +227,7 @@ public class JSONUtil {
    */
   public static String prettyJSON(Object object) {
     String json = null;
-    ObjectMapper mapper = getObjectMapper();
+    ObjectMapper mapper = buildObjectMapper();
     try {
       json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
     } catch (Exception e) {
