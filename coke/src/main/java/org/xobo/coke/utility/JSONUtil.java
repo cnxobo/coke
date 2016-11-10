@@ -32,6 +32,7 @@ public class JSONUtil {
   }
 
   public static String toJSON(Object object, String dateFormat) {
+
     ObjectMapper mapper = buildObjectMapper(dateFormat);
     StringWriter writer = new StringWriter();
     try {
@@ -48,10 +49,14 @@ public class JSONUtil {
    * @return
    */
   public static ObjectMapper buildObjectMapper() {
-    return buildObjectMapper("yyyy-MM-dd HH:mm:ss");
+    return buildObjectMapper(null);
   }
 
   public static ObjectMapper buildObjectMapper(String dateFormat) {
+    if (dateFormat == null) {
+      dateFormat = DEFAULT_DATE_FORMATE;
+    }
+
     ObjectMapper mapper = new ObjectMapper();
     mapper.setDateFormat(new SimpleDateFormat(dateFormat));
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -180,6 +185,20 @@ public class JSONUtil {
       JavaType javaType =
           mapper.getTypeFactory().constructParametrizedType(LinkedHashMap.class, Map.class,
               String.class, Object.class);
+      return mapper.readValue(json, javaType);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static <T> List<T> toList(String json, Class<T> clazz) {
+    if (json == null) {
+      return null;
+    }
+    ObjectMapper mapper = buildObjectMapper();
+    try {
+      JavaType javaType = mapper.getTypeFactory()
+          .constructCollectionType(List.class, clazz);
       return mapper.readValue(json, javaType);
     } catch (Exception e) {
       throw new RuntimeException(e);
