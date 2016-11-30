@@ -110,6 +110,7 @@
 					<include>**/*.swz</include>
 					<include>**/*.html</include>
 					<include>**/*.jsp</include>
+					<include>**/*.db</include>
 				</includes>
 			</resource>
 			<resource>

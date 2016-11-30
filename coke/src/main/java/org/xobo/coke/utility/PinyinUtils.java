@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.xobo.coke.model.Pinyin;
 
@@ -33,6 +34,8 @@ public class PinyinUtils {
 
     List<Pinyin> pinyinList = new ArrayList<Pinyin>();
 
+    String best = PinyinHelper.convertToPinyinString(hanzi, "", PinyinFormat.WITHOUT_TONE);
+    Pinyin bestPinyin = null;
     for (Collection<String> singlePinYinTokenList : pinYinTokenList) {
       if (pinyinList.size() == 0) {
         for (String pinyin : singlePinYinTokenList) {
@@ -48,14 +51,20 @@ public class PinyinUtils {
         pinyinList = newPinYinList;
       }
     }
-    System.out.println(pinyinList);
+    for (Pinyin pinyin : pinyinList) {
+      if (ObjectUtils.equals(best, pinyin.getQuan())) {
+        bestPinyin = pinyin;
+      }
+    }
+    if (bestPinyin != null) {
+      pinyinList.remove(bestPinyin);
+      pinyinList.add(0, bestPinyin);
+    }
     return pinyinList;
   }
 
   public static void main(String[] args) {
-    toPinyin("茜乐的");
-    toPinyin("茜茜");
-    toPinyin("周兵");
-    toPinyin("的士");
+    System.out.println(toPinyin("中国人民银行"));
+    toPinyin("银行");
   }
 }
