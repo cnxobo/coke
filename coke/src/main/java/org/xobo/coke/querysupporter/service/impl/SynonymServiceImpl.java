@@ -42,13 +42,16 @@ public class SynonymServiceImpl implements SynonymService, ReflectionRegister {
     }
 
     if (pinyin != null) {
-      String quan = pinyin.quan();
       String jian = pinyin.jian();
-      quan = StringUtils.isEmpty(quan) ? "Quan" : quan;
-      jian = StringUtils.isEmpty(jian) ? "Jian" : jian;
+      String quan = pinyin.quan();
+
+      jian = StringUtils.isEmpty(jian) ? property + "Jian" : jian;
+      quan = StringUtils.isEmpty(quan) ? property + "Quan" : quan;
+
+      properties.add(jian);
+      properties.add(quan);
+
       properties.add(property);
-      properties.add(property + jian);
-      properties.add(property + quan);
     }
 
     if (!properties.isEmpty()) {
