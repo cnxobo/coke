@@ -110,8 +110,12 @@ public class PinyinMaintain {
               PinyinHelper.convertToPinyinString(value, "", PinyinFormat.WITHOUT_TONE);
           String jianValue = PinyinHelper.getShortPinyin(value);
 
+          quanValue = extractCharDigits(quanValue);
+          jianValue = extractCharDigits(jianValue);
+
           BeanUtils.setProperty(object, quanProperty, quanValue);
           BeanUtils.setProperty(object, jianProperty, jianValue);
+
           session.update(object);
         } catch (Exception e) {
           e.printStackTrace();
@@ -124,6 +128,18 @@ public class PinyinMaintain {
     } while (!list.isEmpty());
 
   }
+
+  public static String extractCharDigits(String content) {
+    StringBuilder builder = new StringBuilder(content.length());
+    for (int i = 0; i < content.length(); i++) {
+      char c = content.charAt(i);
+      if (Character.isLetterOrDigit(c)) {
+        builder.append(c);
+      }
+    }
+    return builder.toString();
+  }
+
 
   @Expose
   public Set<Entry<String, Integer>> prewPinyin(Map<String, Object> parameter)
@@ -203,7 +219,9 @@ public class PinyinMaintain {
 
   public static void main(String[] args) {
     Map<String, Integer> wordMap = new LinkedHashMap<String, Integer>();
-    addSentence(wordMap, "大家好我是小不哥哥");
+    addSentence(wordMap, "大家好我是(小不) . 哥, .哥");
+
+    System.out.println(extractCharDigits("a(b,c"));
     System.out.println(wordMap);
   }
 
