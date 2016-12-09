@@ -21,6 +21,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 import org.xobo.coke.dao.CokeHibernate;
@@ -90,11 +92,19 @@ public class PinyinMaintain {
     Session session = cokeHibernate.getSession();
 
     Collection<?> list;
+
+    Long rowCount = null;
+    Long currentIndex = 0L;
     do {
       DetachedCriteria dc = createDetachedCriteria(clazzName);
       dc.add(Restrictions.or(Restrictions.isNull(quanProperty), Restrictions.isNull(jianProperty)));
       dc.add(Restrictions.isNotNull(property));
       Criteria criteria = dc.getExecutableCriteria(session);
+
+      if (rowCount == null) {
+        rowCount = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+      }
+      criteria.setProjection(null);
       criteria.setFirstResult(0);
       criteria.setMaxResults(batchSize);
       list = criteria.list();
@@ -120,12 +130,14 @@ public class PinyinMaintain {
         } catch (Exception e) {
           e.printStackTrace();
           break;
+        } finally {
+          currentIndex++;
         }
       }
       transaction.commit();
       session.flush();
       session.clear();
-    } while (!list.isEmpty());
+    } while (!list.isEmpty() && currentIndex < rowCount);
 
   }
 
