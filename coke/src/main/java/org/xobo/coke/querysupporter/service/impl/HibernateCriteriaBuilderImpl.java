@@ -65,7 +65,7 @@ public class HibernateCriteriaBuilderImpl implements HibernateCriteriaBuilder {
     Object value = fc.getValue();
     switch (fc.getFilterOperator()) {
       case like:
-        result = p.like(value.toString(), MatchMode.EXACT);
+        result = p.like(value.toString(), MatchMode.ANYWHERE);
         break;
       case likeStart:
         result = p.like(value.toString(), MatchMode.START);
