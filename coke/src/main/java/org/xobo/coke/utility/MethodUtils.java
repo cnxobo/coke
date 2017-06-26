@@ -29,6 +29,19 @@ import com.thoughtworks.paranamer.Paranamer;
 public class MethodUtils {
   private static Paranamer paranamer = new CachingParanamer(new BytecodeReadingParanamer());
 
+  public static void main(String[] args) {
+    Method[] methods = org.xobo.coke.service.DictService.class.getMethods();
+    for (Method method : methods) {
+      try {
+        String[] params = paranamer.lookupParameterNames(method,false);
+        System.out.println(params);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+  }
+
   private static Map<Method, String[]> parameterNamesMap =
       new ConcurrentHashMap<Method, String[]>();
 

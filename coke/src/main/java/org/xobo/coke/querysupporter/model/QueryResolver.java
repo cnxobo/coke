@@ -11,6 +11,29 @@ public class QueryResolver {
   private StringBuilder where = new StringBuilder();
   private StringBuilder order = new StringBuilder();
 
+  public QueryResolver merge(QueryResolver other) {
+    if (other == null) {
+      return this;
+    }
+    select = concatenate(select, other.select, ", ");
+    from = concatenate(from, other.from, ", ");
+    where = concatenate(where, other.where, " and ");
+    order = concatenate(order, other.order, ", ");
+    this.valueMap.putAll(other.valueMap);
+    return this;
+  }
+
+  private StringBuilder concatenate(StringBuilder left, StringBuilder right, String concatenator) {
+    if (left.length() == 0) {
+      return left.append(right);
+    } else if (right.length() == 0) {
+      return left;
+    } else {
+      return left.append(concatenator).append(right);
+    }
+  }
+
+
   public Map<String, Object> getValueMap() {
     return valueMap;
   }

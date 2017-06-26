@@ -184,7 +184,6 @@ coke.webmessage.addResolver("OnlineMessage", function(message) {
 	var content = data.content;
 	var link = data.link;
 	var ids = [];
-	debugger;
 	ids.push(data.id);
 	if (content) {
 		coke.webmessage.sendDesktopNotification(title, content);

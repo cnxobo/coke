@@ -32,10 +32,11 @@ public class SqlBuilderImpl implements SqlBuilder {
   @Override
   public QueryResolver extractCriteria(Class<?> clazz, Criteria criteria, String alias) {
     int parameterNameCount = 0;
-    if (criteria == null) {
-      return null;
-    }
     QueryResolver result = new QueryResolver();
+
+    if (criteria == null) {
+      return result;
+    }
 
     // build where
     if (!criteria.getCriterions().isEmpty()) {
@@ -82,6 +83,7 @@ public class SqlBuilderImpl implements SqlBuilder {
         doradoCriteriaBuilder.mergeQueryParameterCriteria(queryParameter, null, criteria, clazz);
     return extractCriteria(clazz, criteria, alias);
   }
+
 
   private int buildCriterion(Class<?> clazz, StringBuilder sb, Criterion c,
       Map<String, Object> valueMap, int parameterNameCount, String alias) {

@@ -62,7 +62,16 @@
         };
         new PNotify(opts);
     }
-    
+    function notifyLeftTop(title, content,type){
+        var opts = {
+            title: title,
+            text: content,
+            cornerclass: "",
+			type: type,
+            stack: stack_topleft
+        };
+        new PNotify(opts);
+    }
     function notifyBarBottom(title, content){
         var opts = {
             title: title,
@@ -78,6 +87,7 @@
     win.coke = win.coke || {};
     win.coke.notify = {
         notify: notify,
+		notifyLeftTop: notifyLeftTop,
         notifyBarBottom: notifyBarBottom
     }
 })(window);

@@ -81,7 +81,7 @@ public class DatabaseStorageProvider implements FileStorageProvider {
         IOUtils.closeQuietly(fileOutputStream);
       }
     } else {
-      throw new FileNotFoundException("CokeBlob Reocrd not found " + relativePath);
+      throw new FileNotFoundException("CokeBlob Record not found " + relativePath);
     }
     return file.getAbsolutePath();
   }
