@@ -40,5 +40,8 @@
 			scripts/pnotify/pnotify.custom,
 			scripts/pnotify/coke-pnotify
 		</Package>
+		<Package name="clipboardJs" pattern="dorado-js">
+			scripts/clipboard/clipboard
+		</Package>
 	</Packages>
 </config>
