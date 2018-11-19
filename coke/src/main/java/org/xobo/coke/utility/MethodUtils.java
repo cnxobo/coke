@@ -297,7 +297,7 @@ public class MethodUtils {
           } else {
             valueNode = rootNode;
           }
-        } else if (matchType == MATCH_BY_ORDER) {
+        } else if (matchType == MATCH_BY_NAME) {
           valueNode = rootNode.get(name);
         }
 
