@@ -183,6 +183,12 @@ public class MethodUtils {
         MATCH_BY_ORDER);
   }
 
+  public static Object invokeMethodByOrder(Class<?> clazz, Object target, String methodName,
+      JsonNode rootNode) {
+    return invokeMethod(clazz, target, methodName, rootNode,
+        MATCH_BY_ORDER);
+  }
+
   public static Object invokeMethod(Class<?> clazz, Object target, String methodName,
       JsonNode rootNode, int matchType) {
     Class<?>[] paramTypes = null;
