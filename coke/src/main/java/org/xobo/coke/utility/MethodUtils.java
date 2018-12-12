@@ -54,8 +54,8 @@ public class MethodUtils {
       }
     }
 
-    public Object create(Object obj) throws InstantiationException,
-        IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public Object create(Object obj) throws InstantiationException, IllegalAccessException,
+        IllegalArgumentException, InvocationTargetException {
       Map<String, Object> map = new HashMap<String, Object>();
       if (!(obj instanceof Map) && singleConstructorName != null) {
         map.put(singleConstructorName, obj);
@@ -106,9 +106,9 @@ public class MethodUtils {
     }
   }
 
-  public static void main(String[] args) throws InstantiationException, IllegalAccessException,
-      IllegalArgumentException, InvocationTargetException, SecurityException,
-      NoSuchMethodException {
+  public static void main(String[] args)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, SecurityException, NoSuchMethodException {
 
 
     Map<String, Object> parameterMap = new HashMap<String, Object>();
@@ -185,16 +185,31 @@ public class MethodUtils {
 
   public static Object invokeMethodByOrder(Class<?> clazz, Object target, String methodName,
       JsonNode rootNode) {
-    return invokeMethod(clazz, target, methodName, rootNode,
-        MATCH_BY_ORDER);
+    return invokeMethod(clazz, target, methodName, rootNode, MATCH_BY_ORDER);
   }
 
   public static Object invokeMethod(Class<?> clazz, Object target, String methodName,
       JsonNode rootNode, int matchType) {
+
+    clazz = getOriginClassProxyByDubbo(clazz);
     Class<?>[] paramTypes = null;
-    Method method =
-        ReflectionUtils.findMethod(clazz, methodName, paramTypes);
+    Method method = ReflectionUtils.findMethod(clazz, methodName, paramTypes);
     return invokeMethod(target, method, rootNode, matchType);
+  }
+
+
+  public static Class<?> getOriginClassProxyByDubbo(Class<?> clazz) {
+    String className = clazz.getName();
+    if (className.startsWith("com.alibaba.dubbo.common.bytecode.proxy")) {
+      Class<?>[] clazzs = clazz.getInterfaces();
+      for (Class<?> interfaceClazz : clazzs) {
+        String interfaceClazzName = interfaceClazz.getName();
+        if (!interfaceClazzName.startsWith("com.alibaba.dubbo")) {
+          return interfaceClazz;
+        }
+      }
+    }
+    return clazz;
   }
 
   @SuppressWarnings("unchecked")
@@ -347,20 +362,17 @@ public class MethodUtils {
         if (rawType instanceof Class<?>) {
           if (Collection.class.isAssignableFrom((Class<?>) rawType)) {
             if (typeArguments.length > 0) {
-              JavaType javaType =
-                  mapper.getTypeFactory()
-                      .constructParametrizedType(ArrayList.class, List.class, rt);
+              JavaType javaType = mapper.getTypeFactory().constructParametrizedType(ArrayList.class,
+                  List.class, rt);
               value = mapper.readValue(valueNode.toString(), javaType);
             }
           } else if (Map.class.isAssignableFrom((Class<?>) rawType)) {
-            JavaType javaType =
-                mapper.getTypeFactory().constructParametrizedType(LinkedHashMap.class, Map.class,
-                    rt, Object.class);
+            JavaType javaType = mapper.getTypeFactory()
+                .constructParametrizedType(LinkedHashMap.class, Map.class, rt, Object.class);
             value = mapper.readValue(valueNode.toString(), javaType);
           } else {
-            JavaType javaType =
-                mapper.getTypeFactory().constructParametrizedType(LinkedHashMap.class, Map.class,
-                    rt, Object.class);
+            JavaType javaType = mapper.getTypeFactory()
+                .constructParametrizedType(LinkedHashMap.class, Map.class, rt, Object.class);
             Map<String, Object> result = mapper.readValue(valueNode.toString(), javaType);
             value = ClassUtils.createInstance(rawType, result);
           }
