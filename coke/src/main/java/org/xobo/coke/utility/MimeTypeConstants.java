@@ -21,7 +21,6 @@ package org.xobo.coke.utility;
  * not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  */
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +33,7 @@ import java.util.Map;
  * @code.reviewer Miro Halas
  * @code.reviewed 1.4 2005/07/29 07:36:24 bastafidli
  */
+@Deprecated
 public final class MimeTypeConstants {
   // Attributes ///////////////////////////////////////////////////////////////
 

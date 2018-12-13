@@ -13,7 +13,7 @@ import org.xobo.coke.model.Pinyin;
 
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
-
+@Deprecated
 public class PinyinUtils {
 
   public static Collection<Pinyin> toPinyin(String hanzi) {

@@ -15,6 +15,7 @@ import org.springframework.util.ClassUtils;
 import javassist.util.proxy.ProxyObject;
 import net.sf.cglib.proxy.Proxy;
 
+@Deprecated
 public class BeanReflectionUtils {
 
   /**

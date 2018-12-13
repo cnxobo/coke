@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.util.UriUtils;
 
+@Deprecated
 public class CokeURLUtils {
   public static String encode(String value) {
     String encodedValue;

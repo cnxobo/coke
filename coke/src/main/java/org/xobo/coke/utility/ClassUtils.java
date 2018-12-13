@@ -12,6 +12,7 @@ import com.bstek.dorado.data.entity.EntityState;
 import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.provider.Page;
 
+@Deprecated
 public class ClassUtils {
   private static Map<Type, InstanceCreator> classNewInstance = new HashMap<Type, InstanceCreator>();
 

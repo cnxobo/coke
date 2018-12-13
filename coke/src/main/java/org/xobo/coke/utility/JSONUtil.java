@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
+@Deprecated
 public class JSONUtil {
   public static final String DEFAULT_DATE_FORMATE = "yyyy-MM-dd HH:mm:ss";
   public static final String IGNORE_PROPERTEIS_FILTER = "ignoreProperteisFilter";

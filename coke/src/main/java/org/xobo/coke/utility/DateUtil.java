@@ -9,6 +9,7 @@ import java.util.Date;
  * 日期工具类：用于日期相关的处理
  * 
  */
+@Deprecated
 public class DateUtil {
   // Grace style
   public static final String PATTERN_GRACE = "yyyy/MM/dd HH:mm:ss";

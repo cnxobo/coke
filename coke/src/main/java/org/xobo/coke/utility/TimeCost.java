@@ -1,5 +1,6 @@
 package org.xobo.coke.utility;
 
+@Deprecated
 public class TimeCost {
   private String name;
   private long timeStart;

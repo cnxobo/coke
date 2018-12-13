@@ -32,6 +32,7 @@ import com.thoughtworks.paranamer.AdaptiveParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
+@Deprecated
 public class MethodUtils {
   private static Paranamer paranamer = new CachingParanamer(new AdaptiveParanamer());
   public static final int MATCH_BY_NAME = 1;

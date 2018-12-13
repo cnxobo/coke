@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-
+@Deprecated
 public class NumberParser {
   public static List<Long> toLongs(String nums) {
     if (StringUtils.isEmpty(nums)) {
