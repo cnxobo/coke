@@ -365,9 +365,9 @@ public class HibernateSupportDao<K> extends HibernateDao {
     if (baseEntity instanceof Company) {
       ((Company) baseEntity).setCompanyId(user.getCompanyId());
     }
-    Object a = null;
-
-    baseEntity.setCreateUser(user.getUsername());
+    if (user != null) {
+      baseEntity.setCreateUser(user.getUsername());
+    }
     baseEntity.setCreateDate(new Date());
     baseEntity.setDeleted(false);
     session.save(baseEntity);

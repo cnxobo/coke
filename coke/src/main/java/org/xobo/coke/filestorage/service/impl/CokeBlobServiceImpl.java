@@ -24,7 +24,11 @@ public class CokeBlobServiceImpl implements CokeBlobService {
     cokeBlob.setData(data);
     cokeBlob.setType(type);
     cokeBlob.setCreateTime(new Date());
-    cokeHibernate.getSession().save(cokeBlob);
+    try {
+      cokeHibernate.getSession().save(cokeBlob);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     return cokeBlob;
 
   }
