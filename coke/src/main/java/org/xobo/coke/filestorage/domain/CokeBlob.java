@@ -1,28 +1,33 @@
 package org.xobo.coke.filestorage.domain;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Lob;
+import org.xobo.coke.model.BaseModel;
 
 @Entity(name = "CK_BLOB")
-public class CokeBlob {
-  private Long id;
+public class CokeBlob extends BaseModel {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
   private byte[] data;
   private Date createTime;
+  private String className;
+  private String type;
 
-  @Id
-  @GeneratedValue
-  @Column(name = "ID")
-  public Long getId() {
-    return id;
+  public CokeBlob() {}
+
+  public CokeBlob(String type, byte[] data) {
+    this.type = type;
+    this.data = data;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public CokeBlob(String type, byte[] data, String className) {
+    this.type = type;
+    this.data = data;
+    this.className = className;
   }
 
   @Lob
@@ -35,6 +40,15 @@ public class CokeBlob {
     this.data = data;
   }
 
+  @Column(name = "TYPE")
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
   @Column(name = "CREATE_TIME")
   public Date getCreateTime() {
     return createTime;
@@ -43,4 +57,15 @@ public class CokeBlob {
   public void setCreateTime(Date createTime) {
     this.createTime = createTime;
   }
+
+
+  @Column(name = "CLASS_NAME")
+  public String getClassName() {
+    return className;
+  }
+
+  public void setClassName(String className) {
+    this.className = className;
+  }
+
 }

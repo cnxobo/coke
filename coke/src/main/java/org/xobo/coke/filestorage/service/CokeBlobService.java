@@ -7,4 +7,9 @@ public interface CokeBlobService {
 
   CokeBlob get(Long id);
 
+  String getContent(Long id);
+
+  Long putContent(String data);
+
+  CokeBlob update(Long id, String data);
 }

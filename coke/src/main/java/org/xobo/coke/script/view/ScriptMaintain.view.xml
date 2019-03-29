@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="HrScript">
+      <Property name="creationType">com.hrhelper.hro.framework.script.entity.HrScript</Property>
+      <PropertyDef name="engine">
+        <Property></Property>
+        <Property name="label">引擎</Property>
+      </PropertyDef>
+      <PropertyDef name="code">
+        <Property></Property>
+        <Property name="label">编码</Property>
+      </PropertyDef>
+      <PropertyDef name="name">
+        <Property></Property>
+        <Property name="label">名称</Property>
+      </PropertyDef>
+      <PropertyDef name="description">
+        <Property></Property>
+        <Property name="label">描述</Property>
+      </PropertyDef>
+      <PropertyDef name="remark">
+        <Property></Property>
+        <Property name="label">备注</Property>
+      </PropertyDef>
+      <PropertyDef name="contentId">
+        <Property name="dataType">Long</Property>
+      </PropertyDef>
+      <PropertyDef name="id">
+        <Property name="dataType">Long</Property>
+      </PropertyDef>
+      <PropertyDef name="createUser">
+        <Property></Property>
+        <Property name="label">创建人</Property>
+      </PropertyDef>
+      <PropertyDef name="createDate">
+        <Property name="dataType">Date</Property>
+        <Property name="label">创建日期</Property>
+      </PropertyDef>
+      <PropertyDef name="updateUser">
+        <Property></Property>
+        <Property name="label">更新人</Property>
+      </PropertyDef>
+      <PropertyDef name="updateDate">
+        <Property name="dataType">Date</Property>
+        <Property name="label">更新日期</Property>
+      </PropertyDef>
+      <PropertyDef name="deleted">
+        <Property name="dataType">Boolean</Property>
+        <Property name="label">有效</Property>
+      </PropertyDef>
+      <Reference name="scriptContent">
+        <Property name="dataType">HrClob</Property>
+        <Property name="parameter">$${this.contentId}</Property>
+        <Property name="dataProvider">#loadClob</Property>
+      </Reference>
+    </DataType>
+    <DataType name="HrClob">
+      <Property name="creationType">org.xobo.coke.filestorage.domain.CokeBlob</Property>
+      <PropertyDef name="data">
+        <Property></Property>
+      </PropertyDef>
+      <PropertyDef name="id">
+        <Property name="dataType">Long</Property>
+      </PropertyDef>
+      <PropertyDef name="createUser">
+        <Property></Property>
+        <Property name="label">创建人</Property>
+      </PropertyDef>
+      <PropertyDef name="createDate">
+        <Property name="dataType">Date</Property>
+        <Property name="label">创建日期</Property>
+      </PropertyDef>
+      <PropertyDef name="updateUser">
+        <Property></Property>
+        <Property name="label">更新人</Property>
+      </PropertyDef>
+      <PropertyDef name="updateDate">
+        <Property name="dataType">Date</Property>
+        <Property name="label">更新日期</Property>
+      </PropertyDef>
+      <PropertyDef name="deleted">
+        <Property name="dataType">Boolean</Property>
+        <Property name="label">有效</Property>
+      </PropertyDef>
+    </DataType>
+    <DataType name="ScriptEngineInfo">
+      <Property name="creationType">com.hrhelper.hro.framework.script.model.ScriptEngineInfo</Property>
+    </DataType>
+    <DataType name="ScriptTester">
+      <PropertyDef name="functionName"/>
+      <PropertyDef name="parameter"/>
+      <PropertyDef name="result"/>
+    </DataType>
+  </Model>
+  <View>
+    <ClientEvent name="onClick">if (!window.ace){
+	jQuery.getScript(&quot;/js/ace/ace.js&quot;);
+}</ClientEvent>
+    <Property name="packages">CokeAction,font-awesome</Property>
+    <Panel>
+      <Buttons/>
+      <Children>
+        <ToolBar>
+          <ToolBarButton id="buttonAddHrScript">
+            <Property name="caption">添加</Property>
+            <Property name="iconClass">fa fa-plus</Property>
+          </ToolBarButton>
+          <ToolBarButton id="buttonEditHrScript">
+            <Property name="caption">编辑</Property>
+            <Property name="iconClass">fa fa-pencil</Property>
+          </ToolBarButton>
+          <ToolBarButton id="buttonDelHrScript">
+            <Property name="caption">删除</Property>
+            <Property name="iconClass">fa fa-minus</Property>
+          </ToolBarButton>
+          <Fill/>
+          <DataPilot>
+            <Property name="itemCodes">pages,pageSize</Property>
+          </DataPilot>
+          <ToolBarButton>
+            <Property name="caption">重置脚本</Property>
+            <Property name="action">ajaxActionInitScript</Property>
+          </ToolBarButton>
+          <ToolBarButton>
+            <ClientEvent name="onClick">view.id('dialogTest').show();
+</ClientEvent>
+            <Property name="caption">运行</Property>
+          </ToolBarButton>
+        </ToolBar>
+        <DataSet id="dataSetHrScript">
+          <Property name="dataType">[HrScript]</Property>
+          <Property name="dataProvider">#loadHrScripts</Property>
+          <Property name="pageSize">20</Property>
+        </DataSet>
+        <DataGrid id="dataGridHrScript">
+          <Property name="dataSet">dataSetHrScript</Property>
+          <Property name="selectionMode">multiRows</Property>
+          <Property name="readOnly">true</Property>
+          <RowSelectorColumn/>
+          <RowNumColumn/>
+          <DataColumn name="engine">
+            <Property name="property">engine</Property>
+          </DataColumn>
+          <DataColumn name="code">
+            <Property name="property">code</Property>
+          </DataColumn>
+          <DataColumn name="name">
+            <Property name="property">name</Property>
+          </DataColumn>
+          <DataColumn name="description">
+            <Property name="property">description</Property>
+          </DataColumn>
+          <DataColumn name="remark">
+            <Property name="property">remark</Property>
+          </DataColumn>
+        </DataGrid>
+        <Dialog id="dialogHrScript">
+          <Property name="width">600</Property>
+          <Property name="height">500</Property>
+          <Buttons>
+            <Button id="buttonSaveHrScript">
+              <Property name="iconClass">fa fa-check</Property>
+              <Property name="caption">保存</Property>
+            </Button>
+            <Button id="buttonCancelHrScript">
+              <Property name="iconClass">fa fa-times</Property>
+              <Property name="caption">取消</Property>
+            </Button>
+            <Button>
+              <ClientEvent name="onClick">		console.log(&quot;button Click&quot;);
+</ClientEvent>
+              <Property name="caption">Click</Property>
+            </Button>
+          </Buttons>
+          <Children>
+            <TabControl>
+              <ControlTab>
+                <Property name="caption">配置</Property>
+                <Container>
+                  <AutoForm>
+                    <Property name="dataSet">dataSetHrScript</Property>
+                    <Property name="dataPath">#</Property>
+                    <AutoFormElement layoutConstraint="colSpan:2">
+                      <Property name="name">name</Property>
+                      <Property name="property">name</Property>
+                      <Editor/>
+                    </AutoFormElement>
+                    <AutoFormElement>
+                      <Property name="name">code</Property>
+                      <Property name="property">code</Property>
+                      <Editor/>
+                    </AutoFormElement>
+                    <AutoFormElement>
+                      <Property name="name">engine</Property>
+                      <Property name="property">engine</Property>
+                      <Property name="trigger">dataSetDropDownScriptingEngine</Property>
+                      <Editor/>
+                    </AutoFormElement>
+                    <AutoFormElement layoutConstraint="colSpan:2">
+                      <Property name="name">description</Property>
+                      <Property name="property">description</Property>
+                      <Editor>
+                        <TextArea/>
+                      </Editor>
+                    </AutoFormElement>
+                    <AutoFormElement layoutConstraint="colSpan:2">
+                      <Property name="name">remark</Property>
+                      <Property name="property">remark</Property>
+                      <Editor>
+                        <TextArea/>
+                      </Editor>
+                    </AutoFormElement>
+                  </AutoForm>
+                </Container>
+              </ControlTab>
+              <ControlTab>
+                <Property name="caption">脚本</Property>
+                <Container>
+                  <TextArea id="textAreaCode">
+                    <ClientEvent name="onReady">var dataSetHrScript = view.id(&quot;dataSetHrScript&quot;);
+var entity = dataSetHrScript.getData(&quot;#&quot;);
+var property = &quot;scriptContent&quot;;
+codeEditor(entity, property, self);
+
+
+function codeEditor(entity, property, textAreaWidget){
+	var realTextArea = jQuery(textAreaWidget._dom).find(&quot;textarea&quot;)[0];
+	ace.config.set(&quot;basePath&quot;, &quot;/js/ace&quot;)
+	
+	var editor = ace.edit(&quot;d_&quot; + textAreaWidget.get(&quot;id&quot;));
+	editor.on(&quot;blur&quot;, function(){
+		entity.set(property, editor.getValue());
+	});
+	editor.setTheme(&quot;ace/theme/github&quot;);
+	editor.getSession().setMode(&quot;ace/mode/sql&quot;);
+	var scriptContent = entity.get(&quot;scriptContent&quot;);
+	editor.setValue(scriptContent);
+	var dialog = view.id(&quot;dialogHrScript&quot;);
+	dialog.editor = editor;
+}
+</ClientEvent>
+                  </TextArea>
+                </Container>
+              </ControlTab>
+            </TabControl>
+          </Children>
+          <Tools/>
+        </Dialog>
+        <Dialog id="dialogTest">
+          <Buttons>
+            <Button>
+              <ClientEvent name="onClick">var ajaxActionInvokeScript = view.id(&quot;ajaxActionInvokeScript&quot;);
+var dataSetHrScript = view.id(&quot;dataSetHrScript&quot;);
+hrScript = dataSetHrScript.getData(&quot;#&quot;);
+var autoFormScriptTester = view.id(&quot;autoFormScriptTester&quot;);
+scriptTester = autoFormScriptTester.get(&quot;entity&quot;);
+
+var parameterStr = scriptTester.get(&quot;parameter&quot;);
+var parameter = dorado.JSON.parse(parameterStr);
+ajaxActionInvokeScript.set(&quot;parameter&quot;, {
+	code: hrScript.get(&quot;code&quot;),
+	functionName: scriptTester.get(&quot;functionName&quot;),
+	prameter: [parameter]
+}).execute();
+</ClientEvent>
+              <Property name="caption">运行</Property>
+            </Button>
+            <Button/>
+          </Buttons>
+          <Children>
+            <AutoForm id="autoFormScriptTester">
+              <Property name="dataType">ScriptTester</Property>
+              <AutoFormElement>
+                <Property name="name">functionName</Property>
+                <Property name="property">functionName</Property>
+                <Editor/>
+              </AutoFormElement>
+              <AutoFormElement>
+                <Property name="name">parameter</Property>
+                <Property name="property">parameter</Property>
+                <Editor/>
+              </AutoFormElement>
+              <AutoFormElement>
+                <Property name="name">result</Property>
+                <Property name="property">result</Property>
+                <Editor/>
+              </AutoFormElement>
+            </AutoForm>
+          </Children>
+          <Tools/>
+        </Dialog>
+      </Children>
+      <Tools/>
+    </Panel>
+    <UpdateAction id="updateActionHrScript">
+      <Property name="dataResolver">#saveHrScripts</Property>
+      <UpdateItem>
+        <Property name="dataSet">dataSetHrScript</Property>
+      </UpdateItem>
+    </UpdateAction>
+    <AjaxAction id="ajaxActionInitScript">
+      <Property name="service">#initScript</Property>
+    </AjaxAction>
+    <AjaxAction id="ajaxActionInvokeScript">
+      <Property name="service">#invokeScript</Property>
+    </AjaxAction>
+    <DataSet id="dataSetScriptEngineInfo">
+      <Property name="dataType">[ScriptEngineInfo]</Property>
+      <Property name="dataProvider">#loadScriptingEngine</Property>
+    </DataSet>
+    <DataSetDropDown id="dataSetDropDownScriptingEngine">
+      <Property name="dataSet">dataSetScriptEngineInfo</Property>
+      <Property name="property">name</Property>
+      <Property name="autoOpen">true</Property>
+      <Property name="editable">false</Property>
+      <DataColumn>
+        <Property name="name">name</Property>
+        <Property name="property">name</Property>
+        <Editor/>
+      </DataColumn>
+    </DataSetDropDown>
+  </View>
+</ViewConfig>

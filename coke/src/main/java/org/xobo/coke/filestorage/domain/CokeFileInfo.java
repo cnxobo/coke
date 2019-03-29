@@ -1,16 +1,17 @@
 package org.xobo.coke.filestorage.domain;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Transient;
+import org.xobo.coke.model.BaseModel;
 
 @Entity(name = "CK_FILE_INFO")
-public class CokeFileInfo {
-  private Long id;
+public class CokeFileInfo extends BaseModel {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
   private String fileNo;
   private String filename;
   private String fileStorageType;
@@ -18,17 +19,6 @@ public class CokeFileInfo {
   private Date createTime;
   private String createBy;
   private String absolutePath;
-
-  @Id
-  @GeneratedValue
-  @Column(name = "ID")
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
 
   @Column(name = "FILE_NO", unique = true)
   public String getFileNo() {

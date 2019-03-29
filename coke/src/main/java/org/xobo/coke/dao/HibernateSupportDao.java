@@ -1,14 +1,13 @@
 package org.xobo.coke.dao;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -34,7 +33,6 @@ import org.xobo.coke.service.PersistAction;
 import org.xobo.coke.service.impl.CriteriaImplHelper;
 import org.xobo.coke.service.impl.NopPersistAction;
 import org.xobo.coke.utility.BeanReflectionUtils;
-
 import com.bstek.bdf2.core.business.IUser;
 import com.bstek.bdf2.core.context.ContextHolder;
 import com.bstek.bdf2.core.orm.hibernate.HibernateDao;
@@ -428,7 +426,7 @@ public class HibernateSupportDao<K> extends HibernateDao {
   }
 
   @SuppressWarnings("unchecked")
-  public <T> T get(Class<T> clazz, String id) {
+  public <T> T get(Class<T> clazz, Serializable id) {
     return (T) this.getSession().get(clazz, id);
   }
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <ClientEvent name="onReady">var toolBarButtonCopy = view.id('toolBarButtonCopy');
+var textArea = view.id(&quot;textArea&quot;);
+
+new Clipboard(toolBarButtonCopy.getDom(), {
+    text: function(trigger) {
+		console.log(trigger);
+        return textArea.get(&quot;text&quot;);
+    }
+});</ClientEvent>
+    <Property name="packages">clipboardJs</Property>
+    <ToolBar>
+      <ToolBarButton id="toolBarButtonCopy">
+        <Property name="caption">Copy</Property>
+      </ToolBarButton>
+    </ToolBar>
+    <TextArea id="textArea"/>
+  </View>
+</ViewConfig>

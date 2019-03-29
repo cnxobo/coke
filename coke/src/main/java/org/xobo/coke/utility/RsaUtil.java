@@ -1,7 +1,6 @@
 package org.xobo.coke.utility;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -22,8 +21,11 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-
 import javax.crypto.Cipher;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
 
 public class RsaUtil {
 
@@ -130,6 +132,8 @@ public class RsaUtil {
     // Let's check the signature
     boolean isCorrect = verify("foobar", signature, pair.getPublic());
     System.out.println("Signature correct: " + isCorrect);
+
+    pub(pair.getPublic());
   }
 
   public static String sign(String plainText, PrivateKey privateKey) throws Exception {
@@ -155,6 +159,22 @@ public class RsaUtil {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+
+  public static void pub(PublicKey pub) throws IOException {
+    byte[] pubBytes = pub.getEncoded();
+
+    SubjectPublicKeyInfo spkInfo = SubjectPublicKeyInfo.getInstance(pubBytes);
+    ASN1Primitive primitive = spkInfo.parsePublicKey();
+    byte[] publicKeyPKCS1 = primitive.getEncoded();
+    PemObject pemObject = new PemObject("RSA PUBLIC KEY", publicKeyPKCS1);
+    StringWriter stringWriter = new StringWriter();
+    PemWriter pemWriter = new PemWriter(stringWriter);
+    pemWriter.writeObject(pemObject);
+    pemWriter.close();
+    System.out.println(stringWriter.toString());
+    String pemString = stringWriter.toString();
   }
 
   static public String write(PrivateKey privateKey) throws IOException {
