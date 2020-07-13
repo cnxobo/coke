@@ -4,9 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-
 import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +16,9 @@ import org.xobo.coke.concurrent.service.BackgroundTask;
 import org.xobo.coke.concurrent.service.BackgroundTaskExecutorService;
 import org.xobo.coke.concurrent.service.BackgroundTaskLogService;
 import org.xobo.coke.concurrent.service.BackgroundTaskRunner;
-import org.xobo.coke.utility.JSONUtil;
-
+import org.xobo.toolkit.JSONUtil;
 import com.bstek.dorado.core.Configure;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.*;
 
 @Service
 public class BackgroundTaskExecutorServiceImpl
@@ -137,7 +130,7 @@ public class BackgroundTaskExecutorServiceImpl
 
   @PostConstruct
   public void init() {
-    Long threadPoolSize = Configure.getLong("coke.threadPoolSize", 50);
+    Long threadPoolSize = Configure.getLong("coke.threadPoolSize", 10);
     String nodeName = Configure.getString("coke.nodeName");
     executorService =
         MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(threadPoolSize.intValue()));

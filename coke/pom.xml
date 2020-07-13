@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.xobo</groupId>
-	<version>0.0.9-SNAPSHOT</version>
+	<version>0.0.10-SNAPSHOT</version>
 	<artifactId>coke</artifactId>
 	<dependencies>
 		<dependency>
@@ -81,6 +81,12 @@
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.51</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.2.6.RELEASE</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -138,28 +144,31 @@
 			</resource>
 		</resources>
 	</build>
-	<distributionManagement>
-		<repository>
-			<id>ezy-deployment</id>
-			<name>Internal Releases</name>
-			<url>http://172.16.0.13:8081/repository/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>ezy-deployment</id>
-			<name>Internal Releases</name>
-			<url>http://172.16.0.13:8081/repository/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+	
 	<repositories>
-		<repository>
-			<id>ezy-repository</id>
-			<url>http://172.16.0.13:8081/repository/public/</url>
-		</repository>
-	</repositories>
+        <repository>
+            <id>xobo-repo</id>
+            <name>Nexus Release Repository</name>
+            <url>https://nexus.xobo.org/content/groups/public/</url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>xobo-repo</id>
+            <name>Nexus Release Repository</name>
+            <url>https://nexus.xobo.org/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>xobo-repo</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>https://nexus.xobo.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>ezy-repository</id>
-			<url>http://172.16.0.13:8081/repository/public/</url>
+			<url>https://nexus.xobo.org/repository/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<properties>

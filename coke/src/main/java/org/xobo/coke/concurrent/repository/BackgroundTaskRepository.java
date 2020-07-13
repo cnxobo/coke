@@ -18,6 +18,7 @@ import org.xobo.coke.dao.CokeHibernate;
 public class BackgroundTaskRepository {
 
   public int updateResult(String taskId, String status, String result) {
+    result = org.apache.commons.lang3.StringUtils.abbreviate(result, 10000);
     String hql = "update " + BackgroundTaskLog.class.getName()
         + " t set t.status = :status, t.result = :result, t.endDate = :endDate where t.taskId = :taskId";
     return cokeHibernate.getSession().createQuery(hql).setString("status", status)

@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.xobo.coke.dao.CokeHibernateL;
 import org.xobo.coke.filestorage.domain.CokeBlob;
 import org.xobo.coke.service.ObjectPersistenceService;
@@ -14,6 +15,7 @@ import org.xobo.coke.service.ObjectSerializeService;
  * 
  */
 @Service(ObjectPersistenceService.BEAN_ID)
+@Transactional
 public class ObjectPersistenceServiceImpl implements ObjectPersistenceService {
 
   @Resource(name = CokeHibernateL.BEAN_ID)

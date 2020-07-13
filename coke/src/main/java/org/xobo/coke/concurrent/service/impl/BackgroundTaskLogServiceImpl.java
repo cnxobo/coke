@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import org.xobo.coke.api.model.Result;
 import org.xobo.coke.concurrent.domain.BackgroundTaskLog;
 import org.xobo.coke.concurrent.repository.BackgroundTaskRepository;
 import org.xobo.coke.concurrent.service.BackgroundTaskLogService;
-import org.xobo.coke.utility.JSONUtil;
+import org.xobo.toolkit.JSONUtil;
 
 @Service
 public class BackgroundTaskLogServiceImpl implements BackgroundTaskLogService {
