@@ -87,6 +87,11 @@
 			<version>5.2.6.RELEASE</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -144,27 +149,27 @@
 			</resource>
 		</resources>
 	</build>
-	
+
 	<repositories>
-        <repository>
-            <id>xobo-repo</id>
-            <name>Nexus Release Repository</name>
-            <url>https://nexus.xobo.org/content/groups/public/</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <repository>
-            <id>xobo-repo</id>
-            <name>Nexus Release Repository</name>
-            <url>https://nexus.xobo.org/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>xobo-repo</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>https://nexus.xobo.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-	
+		<repository>
+			<id>xobo-repo</id>
+			<name>Nexus Release Repository</name>
+			<url>https://nexus.xobo.org/content/groups/public/</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>xobo-repo</id>
+			<name>Nexus Release Repository</name>
+			<url>https://nexus.xobo.org/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>xobo-repo</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>https://nexus.xobo.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>ezy-repository</id>
